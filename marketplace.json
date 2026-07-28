@@ -1,18 +1,14 @@
 {
-  "name": "squeeze-ai-marketplace",
-  "description": "Official Squeeze AI Context Compression Marketplace",
+  "name": "squeeze-ai",
+  "owner": {
+    "name": "Aashu",
+    "email": "aashu90570@gmail.com"
+  },
   "plugins": [
     {
       "name": "squeeze-ai",
       "description": "Enterprise context compression layer reducing LLM token overhead by 60-95%.",
-      "version": "1.0.0",
-      "source": "./",
-      "mcpServers": {
-        "squeeze": {
-          "command": "node",
-          "args": ["mcp-server.js"]
-        }
-      }
+      "source": "./"
     }
   ]
 }

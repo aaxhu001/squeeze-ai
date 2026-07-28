@@ -3,20 +3,15 @@
   "version": "1.0.0",
   "description": "Enterprise context compression layer for AI agents, LLMs, and MCP tools (60-95% JSON, 15-35% AST Code, Reversible CCR & Token Steering).",
   "author": {
-    "name": "SQUEEZE Team"
+    "name": "Aashu",
+    "email": "aashu90570@gmail.com"
   },
   "license": "Apache-2.0",
-  "homepage": "https://github.com/squeeze-ai/squeeze",
+  "homepage": "https://github.com/aaxhu001/squeeze-ai",
   "mcpServers": {
     "squeeze": {
       "command": "node",
       "args": ["${pluginDir}/mcp-server.js"]
     }
-  },
-  "skills": [
-    {
-      "name": "squeeze-compress",
-      "description": "Compress context and JSON payloads before sending to LLM."
-    }
-  ]
+  }
 }
