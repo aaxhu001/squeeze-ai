@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Squeeze AI - System Upgrade in Progress</title>
+  <meta name="description" content="Squeeze AI is currently undergoing scheduled infrastructure and version 2.0 upgrades. We will be back online shortly.">
+  
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    .maint-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .maint-card {
+      background-color: var(--bg-surface, #121215);
+      border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+      border-radius: 20px;
+      padding: 3.5rem 2.5rem;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    
+    .maint-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      background: rgba(181, 96, 63, 0.15);
+      border: 1px solid rgba(181, 96, 63, 0.3);
+      font-size: 0.8rem;
+      color: #b5603f;
+      font-weight: 600;
+      margin-bottom: 1.8rem;
+    }
+    
+    .maint-badge .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #b5603f;
+      box-shadow: 0 0 10px #b5603f;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.7; }
+    }
+    
+    .maint-title {
+      font-size: 2.6rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: #ffffff;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+    }
+    
+    .maint-desc {
+      font-size: 1rem;
+      color: #a1a1aa;
+      line-height: 1.65;
+      margin-bottom: 2.2rem;
+    }
+    
+    .maint-status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-bottom: 2.2rem;
+      text-align: left;
+    }
+    
+    .status-item {
+      background-color: #09090b;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.9rem 1.1rem;
+      border-radius: 10px;
+      font-size: 0.82rem;
+    }
+    
+    .status-name {
+      color: #a1a1aa;
+      display: block;
+      margin-bottom: 4px;
+    }
+    
+    .status-val {
+      font-weight: 700;
+      color: #4ade80;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .status-val.updating {
+      color: #b5603f;
+    }
+    
+    .maint-notify-form {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .maint-input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #09090b;
+      color: #ffffff;
+      font-size: 0.88rem;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .maint-input:focus {
+      border-color: #b5603f;
+    }
+
+    .maint-btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 9999px;
+      background: #b5603f;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.88rem;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(181, 96, 63, 0.4);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .maint-btn:hover {
+      background: #c96c48;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Grid Canvas -->
+  <div class="landing-bg" aria-hidden="true">
+    <canvas id="shapegrid-canvas"></canvas>
+  </div>
+
+  <main class="maint-container">
+    <div class="maint-card">
+      <div style="width: 52px; height: 52px; margin: 0 auto 1.5rem; border-radius: 12px; background: rgba(181, 96, 63, 0.15); border: 1px solid rgba(181, 96, 63, 0.3); display: flex; align-items: center; justify-content: center;">
+        <img src="logo.svg" alt="Squeeze AI Logo" width="32" height="32">
+      </div>
+      
+      <div class="maint-badge">
+        <span class="pulse-dot"></span>
+        Scheduled Core Upgrade v2.0
+      </div>
+      
+      <h1 class="maint-title">System Upgrade <br><span style="color: #b5603f;">in Progress.</span></h1>
+      
+      <p class="maint-desc">
+        We are performing scheduled core upgrades to the Squeeze AI Context Engine, Local Proxy Layer, and WebExtension nodes. Normal operations will resume shortly.
+      </p>
+
+      <div class="maint-status-grid">
+        <div class="status-item">
+          <span class="status-name">CLI & Local Proxy</span>
+          <span class="status-val updating">⚡ Upgrading v2.0</span>
+        </div>
+        <div class="status-item">
+          <span class="status-name">AST & JSON Engines</span>
+          <span class="status-val">✓ Core Active</span>
+        </div>
+        <div class="status-item">
+          <span class="status-name">MCP Server Stdio</span>
+          <span class="status-val updating">⚡ Maintenance</span>
+        </div>
+        <div class="status-item">
+          <span class="status-name">Chrome Extension</span>
+          <span class="status-val">✓ Store Sync</span>
+        </div>
+      </div>
+
+      <!-- Email Notification Form -->
+      <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+      <form class="maint-notify-form" id="notifyForm" target="hidden_iframe" method="POST" action="https://script.google.com/macros/s/AKfycbygh9Fc9EhLGmV5XnpiJ6mE5DjQT0fiB0dKEwnUXJEnDiSVTn7ATlpA6NRSk6VerJwWyg/exec">
+        <input type="email" name="email" class="maint-input" placeholder="Enter your email to get notified when online..." required>
+        <button type="submit" class="maint-btn" id="notifyBtn">Notify Me 🚀</button>
+      </form>
+
+      <div id="notifyThanks" style="display: none; margin-top: 1.25rem; color: #4ade80; font-size: 0.9rem; font-weight: 600;">
+        ✓ Thank you! We will notify you the instant Squeeze is back online.
+      </div>
+
+      <p style="margin-top: 2rem; font-size: 0.78rem; color: #a1a1aa;">
+        Local CLI users can continue running <code>squeeze proxy</code> locally.
+      </p>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('notifyForm');
+    const thanks = document.getElementById('notifyThanks');
+    if (form) {
+      form.addEventListener('submit', () => {
+        setTimeout(() => {
+          form.style.display = 'none';
+          thanks.style.display = 'block';
+        }, 500);
+      });
+    }
+  </script>
+</body>
+</html>

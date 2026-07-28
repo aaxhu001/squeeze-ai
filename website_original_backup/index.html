@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200">
+  <title>Squeeze - Claude Prompt Optimizer Browser Extension</title>
+  <meta name="description" content="Squeeze is a local browser extension that strips polite greetings, redundant fillers, and verbose technical jargon from Claude.ai prompts. 100% private and cache-safe.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+</head>
+<body>
+
+  <!-- Floating Minimal Background -->
+  <div class="landing-bg" aria-hidden="true">
+    <canvas id="shapegrid-canvas"></canvas>
+  </div>
+
+  <!-- Header -->
+  <header class="hdr" id="hdr">
+    <div class="wrap hdr-in">
+      <a class="brand" href="#top">
+        <div class="logo-container">
+          <img src="logo.svg" alt="Squeeze Logo" width="24" height="24" style="display: block;">
+        </div>
+        Squeeze <span class="highlight">for Claude</span>
+      </a>
+      
+      <nav class="nav" aria-label="Primary Navigation">
+        <a href="#how-it-works">How it works</a>
+        <a href="#examples">Sandbox</a>
+        <a href="#calculator">Savings</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      
+      <div class="hdr-cta">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle light/dark theme">
+          <svg id="themeIcon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <button class="btn primary open-waitlist-btn">Join Waitlist</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" tabindex="-1">
+    
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="wrap">
+        <div class="badge">
+          <span class="dot"></span>
+          Chrome Extension Coming Soon
+        </div>
+        <h1>Squeeze your Claude prompts locally — <br>keep your <span class="accent-highlight">context lean.</span></h1>
+        <p class="lede">
+          We help you use your tokens effectively. Squeeze optimizes your Claude prompts locally, keeping context windows lean and lowering your bills instantly.
+        </p>
+        
+        <div class="hero-actions">
+          <button class="btn primary open-waitlist-btn">Join the Waitlist 🚀</button>
+          <a class="btn secondary" href="#examples">Try Sandbox Live</a>
+        </div>
+
+        <!-- Extension Mockup -->
+        <div class="mockup-container reveal">
+          <div class="mockup-header">
+            <div class="mockup-dots">
+              <span class="mockup-dot"></span>
+              <span class="mockup-dot"></span>
+              <span class="mockup-dot"></span>
+            </div>
+            <div class="mockup-address">claude.ai/chat</div>
+            <div style="width: 48px;"></div>
+          </div>
+          
+          <div class="mockup-body">
+            <!-- Simulated Claude UI -->
+            <div class="claude-sim">
+              <div class="claude-header">
+                <div class="claude-logo">C</div>
+                <span class="claude-title">Claude Sonnet 5</span>
+              </div>
+              <div class="prompt-area">
+                <div class="prompt-text" id="mockPromptText">Hey Claude, hope you're doing well! Here is the React dashboard component code again. I made a tiny tweak to the login button style. Could you please review it and check for any bugs? Thanks so much!
+
+```jsx
+// [2,400 lines of unchanged React dashboard code copy-pasted here for the 3rd time in this thread...]
+```</div>
+                <div class="prompt-footer">
+                  <div class="claude-footer-left">
+                    <!-- Paperclip Attachment Icon -->
+                    <button class="claude-icon-btn" title="Add Content" disabled>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  <div class="claude-footer-right">
+                    <!-- Model Selector Badge -->
+                    <div class="claude-model-badge">
+                      <span>Sonnet 5</span>
+                      <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                    
+                    <!-- Squeeze Buttons (Inline White) -->
+                    <div class="squeeze-actions">
+                      <!-- Squeeze Funnel Button -->
+                      <button class="squeeze-action-btn" title="Squeeze Prompt" id="mockSqueezeBtn">
+                        <svg viewBox="0 0 512 512" width="11" height="11" style="display: block;">
+                          <rect x="120" y="140" width="272" height="48" rx="24" fill="currentColor"/>
+                          <rect x="144" y="212" width="224" height="48" rx="24" fill="currentColor" fill-opacity="0.8"/>
+                          <rect x="176" y="284" width="160" height="48" rx="24" fill="currentColor" fill-opacity="0.6"/>
+                          <rect x="208" y="356" width="96" height="48" rx="24" fill="currentColor" fill-opacity="0.4"/>
+                        </svg>
+                      </button>
+                      <!-- Squeeze PDF Button -->
+                      <button class="squeeze-action-btn" title="Squeeze PDF" disabled>
+                        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                      </button>
+                      <!-- Undo Button -->
+                      <button class="squeeze-action-btn" title="Undo" disabled>
+                        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M3 7v6h6"></path>
+                          <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    <!-- Submit Arrow Button -->
+                    <button class="claude-submit-btn" disabled>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="19" x2="12" y2="5"></line>
+                        <polyline points="5 12 12 5 19 12"></polyline>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Simulated Extension Popup -->
+            <div class="extension-mock">
+              <div class="ext-hdr">
+                <div class="ext-brand">
+                  <img src="logo.svg" alt="Squeeze Icon" width="16" height="16" style="margin-right: 6px; display: inline-block; vertical-align: middle;">
+                  Squeeze
+                </div>
+                <span class="ext-badge">Beta</span>
+              </div>
+              
+              <div class="ext-stats">
+                <div class="ext-stat">
+                  <span class="ext-stat-label">Prompts Squeezed</span>
+                  <span id="mockStatPrompts" class="ext-stat-val">124</span>
+                </div>
+                <div class="ext-stat">
+                  <span class="ext-stat-label">Estimated Savings</span>
+                  <span id="mockStatCost" class="ext-stat-val highlight">$14.22</span>
+                </div>
+              </div>
+              
+              <div class="ext-mode-selector">
+                <span class="ext-mode-label">Compression Mode</span>
+                <div class="ext-modes">
+                  <button type="button" class="ext-mode-btn" data-mode="squeeze">Squeeze</button>
+                  <button type="button" class="ext-mode-btn active" data-mode="balanced">Balanced</button>
+                  <button type="button" class="ext-mode-btn" data-mode="polish">Polish</button>
+                </div>
+              </div>
+              
+              <div class="ext-rules">
+                <label class="ext-rule">
+                  <input type="checkbox" checked disabled>
+                  <span>Strip greetings / hello</span>
+                </label>
+                <label class="ext-rule">
+                  <input type="checkbox" checked disabled>
+                  <span>Simplify verbose phrases</span>
+                </label>
+                <label class="ext-rule">
+                  <input type="checkbox" id="mockRuleAbbreviate" disabled>
+                  <span>Abbreviate tech terms</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+
+    <!-- Benefits Section -->
+    <section id="how-it-works">
+      <div class="wrap">
+        <div class="section-hdr reveal">
+          <h2>Maximize savings. <span class="serif-italic">Maintain clarity.</span></h2>
+          <p class="subtitle">Squeeze strips prompt overhead instantly. Spend fewer tokens, keep context windows clean, and speed up Claude's responses.</p>
+        </div>
+        
+        <div class="steps-grid">
+          <div class="step-card reveal">
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+            </div>
+            <h3>Direct Cost Savings</h3>
+            <p>Strips opening greetings and conversational fillers locally. Cuts down input token sizes by up to 60%, lowering your daily usage bills.</p>
+          </div>
+          <div class="step-card reveal" style="transition-delay: 0.05s;">
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <polyline points="9 15 12 12 15 15"></polyline>
+              </svg>
+            </div>
+            <h3>Local PDF Squeezer</h3>
+            <p>Extracts PDF text client-side, automatically identifying and stripping repeating headers, footers, and page numbers to save thousands of tokens.</p>
+          </div>
+          <div class="step-card reveal" style="transition-delay: 0.1s;">
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                <line x1="9" y1="9" x2="15" y2="9"></line>
+                <line x1="9" y1="13" x2="13" y2="13"></line>
+              </svg>
+            </div>
+            <h3>Timeline Summarizer</h3>
+            <p>Scrapes chat history when threads exceed 30k tokens. Compiles chronological turns and code states into a compact prompt to start fresh chats with zero context loss.</p>
+          </div>
+          <div class="step-card reveal" style="transition-delay: 0.15s;">
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+            </div>
+            <h3>Context Deduplicator</h3>
+            <p>Automatically flags and filters duplicate code snippets or long text blocks present in active conversations, keeping your prompt context lean.</p>
+          </div>
+          <div class="step-card reveal" style="transition-delay: 0.2s;">
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path>
+              </svg>
+            </div>
+            <h3>Cache Hit Optimization</h3>
+            <p>Standardizes variable greetings so Claude's prompt cache is preserved, maximizing query speeds and pricing discounts.</p>
+          </div>
+          <div class="step-card reveal" style="transition-delay: 0.25s;">
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <h3>100% Offline Privacy</h3>
+            <p>All compression and file parsing happens locally in your browser sandbox. No external APIs, no tracking, and no remote calls.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Before and After Interactive Squeezer -->
+    <section id="examples">
+      <div class="wrap">
+        <div class="section-hdr reveal">
+          <h2>Squeeze prompts in <span class="serif-italic">real time.</span></h2>
+          <p class="subtitle">Interact with the live sandbox below. Toggle the rules, select a preset, or write your own text to see Squeeze shrink your token consumption.</p>
+        </div>
+        
+        <div class="interactive-squeezer reveal">
+          <div class="squeezer-tabs" role="tablist">
+            <button class="squeezer-tab active" data-preset="polite">Greetings Fluff</button>
+            <button class="squeezer-tab" data-preset="filler">Verbal Fillers</button>
+            <button class="squeezer-tab" data-preset="shorthand">Telegraphic shorthand</button>
+            <button class="squeezer-tab" data-preset="custom">Custom Text</button>
+          </div>
+          
+          <div class="squeezer-controls">
+            <span class="squeezer-badge-live">
+              <span class="dot"></span> Client-side heuristics
+            </span>
+            
+            <div class="mode-radios">
+              <label class="mode-radio-label active" data-mode="balanced">
+                <input type="radio" name="sandboxMode" value="balanced" checked> Balanced
+              </label>
+              <label class="mode-radio-label" data-mode="squeeze">
+                <input type="radio" name="sandboxMode" value="squeeze"> Squeeze
+              </label>
+              <label class="mode-radio-label" data-mode="polish">
+                <input type="radio" name="sandboxMode" value="polish"> Polish
+              </label>
+            </div>
+          </div>
+          
+          <div class="squeezer-panels">
+            <div class="squeezer-panel">
+              <div class="panel-title-row">
+                <span class="panel-title">
+                  <span class="dot-indicator"></span> Original Prompt
+                </span>
+                <span class="token-count" id="rawTokenCount">0 chars</span>
+              </div>
+              <textarea class="squeezer-textarea" id="squeezerInput" placeholder="Type or paste your prompt here..."></textarea>
+            </div>
+            
+            <div class="squeezer-panel">
+              <div class="panel-title-row">
+                <span class="panel-title">
+                  <span class="dot-indicator opt"></span> Optimized Output
+                </span>
+                <span class="token-count" id="squeezedTokenCount">0 chars</span>
+              </div>
+              <div class="squeezer-output" id="squeezerOutput"></div>
+            </div>
+          </div>
+          
+          <div class="squeezer-foot">
+            <span class="squeezer-savings-tag" id="squeezerSavings">0% Trimmed</span>
+            <span style="color: rgb(var(--fg-muted)); font-size: 0.78rem;">Evaluated locally with zero server hops.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Static Before & After Showcase -->
+    <section id="before-after-showcase">
+      <div class="wrap">
+        <div class="section-hdr reveal">
+          <h2>Before & <span class="serif-italic">After.</span></h2>
+          <p class="subtitle">See how Squeeze optimizes prompt structure, file content, and chat history side-by-side.</p>
+        </div>
+        
+        <div class="ba-container reveal">
+          <!-- Card 1: Filler Trimming -->
+          <div class="ba-card">
+            <div class="ba-card-header">
+              <div class="ba-title-row">
+                <span class="ba-badge live">LIVE</span>
+                <span class="ba-title">Filler & Greetings Trimming</span>
+              </div>
+              <span class="ba-desc">Throwaway conversational politeness and redundant fillers stripped locally.</span>
+            </div>
+            <div class="ba-comparison">
+              <div class="ba-side">
+                <span class="ba-side-title">● Raw Input</span>
+                <pre class="ba-code">please, could you write a typescript function
+to query the database for the active user?
+thanks so much in advance!</pre>
+              </div>
+              <div class="ba-side">
+                <span class="ba-side-title">● Via Squeeze</span>
+                <pre class="ba-code">write TS fn to query DB for active user?</pre>
+              </div>
+            </div>
+            <div class="ba-card-footer">
+              <span>Heuristics Compaction · 128 chars → 41 chars (68% savings)</span>
+            </div>
+          </div>
+
+          <!-- Card 2: PDF Boilerplate Removal -->
+          <div class="ba-card">
+            <div class="ba-card-header">
+              <div class="ba-title-row">
+                <span class="ba-badge live">LIVE</span>
+                <span class="ba-title">Local PDF Page-Boilerplate Stripper</span>
+              </div>
+              <span class="ba-desc">Repeating headers, footers, legal disclaimers, and page numbers pruned.</span>
+            </div>
+            <div class="ba-comparison">
+              <div class="ba-side">
+                <span class="ba-side-title">● Raw PDF Extract</span>
+                <pre class="ba-code">Northbridge Analytics - AI Adoption Report 2026
+Chapter 1: Summary of adoption trends
+[page text content...]
+Page 1 of 32 - Confidential Internal Use Only</pre>
+              </div>
+              <div class="ba-side">
+                <span class="ba-side-title">● Via Squeeze PDF</span>
+                <pre class="ba-code">Chapter 1: Summary of adoption trends
+[page text content...]</pre>
+              </div>
+            </div>
+            <div class="ba-card-footer">
+              <span>Page Frequency Filter · 24,500 chars → 16,800 chars (31% cost savings)</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Timeline Context Compaction -->
+          <div class="ba-card">
+            <div class="ba-card-header">
+              <div class="ba-title-row">
+                <span class="ba-badge live">LIVE</span>
+                <span class="ba-title">Timeline Context Summarizer</span>
+              </div>
+              <span class="ba-desc">Chat logs and code states compressed when history size exceeds 30k tokens.</span>
+            </div>
+            <div class="ba-comparison">
+              <div class="ba-side">
+                <span class="ba-side-title">● Raw Chat History</span>
+                <pre class="ba-code"># [32,000 tokens of dialogue turns, greetings,
+# duplicate code blocks, and intermediate tests
+# stretching back over hours of debugging...]</pre>
+              </div>
+              <div class="ba-side">
+                <span class="ba-side-title">● Via Squeeze Summary</span>
+                <pre class="ba-code">## Context Summary from Previous Chat (Squeezed)
+### Recent Discussion Timeline:
+User: Perfect. Add input validation and database routers...
+Claude: Created FastAPI router in router.py...
+### Current Code State:
+#### Latest PYTHON:
+[router.py code content...]</pre>
+              </div>
+            </div>
+            <div class="ba-card-footer">
+              <span>Timeline Pairing · 32,000 tokens → 2,000 tokens (93% token budget savings)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Savings Calculator -->
+    <section id="calculator">
+      <div class="wrap">
+        <div class="section-hdr reveal">
+          <h2>Compute your <span class="serif-italic">prompt overhead.</span></h2>
+          <p class="subtitle">Every message in a Claude thread re-reads the entire chat history. In large project threads, conversational fluff, duplicate code, and PDF page-headers balloon your input size—exhausting your Claude Pro limits 5x faster. See your monthly savings below.</p>
+        </div>
+        
+        <div class="calculator-container reveal">
+          <div class="calc-inputs">
+            
+            <div class="input-group">
+              <div class="input-label-row">
+                <label for="promptSize">Average Prompt Context</label>
+                <span class="input-val-display" id="promptSizeVal">45,000 tokens</span>
+              </div>
+              <input type="range" class="range-slider" id="promptSize" min="1000" max="200000" step="1000" value="45000">
+            </div>
+            
+            <div class="input-group">
+              <div class="input-label-row">
+                <label for="promptCount">Daily Prompt Volume</label>
+                <span class="input-val-display" id="promptCountVal">60 prompts</span>
+              </div>
+              <input type="range" class="range-slider" id="promptCount" min="5" max="200" step="5" value="60">
+            </div>
+            
+            <div class="input-group">
+              <div class="input-label-row">
+                <label for="reductionRate">Average Optimization Trim</label>
+                <span class="input-val-display" id="reductionRateVal">35% saved</span>
+              </div>
+              <input type="range" class="range-slider" id="reductionRate" min="5" max="80" step="1" value="35">
+            </div>
+            
+          </div>
+          
+          <div class="calc-results">
+            <div class="result-block">
+              <span class="result-label">Tokens Saved Monthly</span>
+              <span class="result-val" id="monthlyTokensVal">3.24M</span>
+            </div>
+            <div class="result-block">
+              <span class="result-label">Cash Saved Monthly</span>
+              <span class="result-val savings" id="monthlySavingsVal">$9.72</span>
+              <span class="result-sub">Based on Claude Sonnet 5 input rates ($3/M)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="wrap">
+        <div class="section-hdr reveal">
+          <h2>Questions? <span class="serif-italic">Answered.</span></h2>
+        </div>
+        
+        <div class="faq-list reveal">
+          <details class="faq-item" open>
+            <summary>
+              What is Squeeze?
+              <span class="faq-icon"></span>
+            </summary>
+            <div class="faq-answer">
+              Squeeze is a minimalist local browser extension designed specifically for developers using Claude.ai. It integrates natively into the chat text area, stripping polite greetings, redundant fillers, and verbose technical phrases locally before they are sent to Anthropic.
+            </div>
+          </details>
+          
+          <details class="faq-item">
+            <summary>
+              Does my prompt data go to any external server?
+              <span class="faq-icon"></span>
+            </summary>
+            <div class="faq-answer">
+              No. Squeeze operates 100% offline and locally inside your browser sandbox. It evaluates your text via plain heuristic script strings on your client device and performs the text replacement directly inside the DOM before the submit event triggers. No analytical logs or prompts are transmitted to us.
+            </div>
+          </details>
+          
+          <details class="faq-item">
+            <summary>
+              Does it interfere with Claude's Prompt Caching?
+              <span class="faq-icon"></span>
+            </summary>
+            <div class="faq-answer">
+              No, it actually improves it! Anthropics's Claude prompt caching triggers when large chunks of prefix text remain perfectly identical across turns. Standard greeting words like "Hi Claude", conversational references, or arbitrary politeness vary from turn to turn, destroying cache matches. Squeeze normalizes prompts, resulting in clean, consistent prefixes that are highly cache-safe.
+            </div>
+          </details>
+          
+          <details class="faq-item">
+            <summary>
+              What are the optimization profiles?
+              <span class="faq-icon"></span>
+            </summary>
+            <div class="faq-answer">
+              <strong>Squeeze:</strong> Highly aggressive telegraphic mode. Strips articles ("the", "a"), auxiliary verbs, and shortens technical words ("function" &rarr; "fn", "database" &rarr; "DB").<br>
+              <strong>Balanced (Default):</strong> Strips opening greetings ("hello Claude", "hope you're doing well") and standard filler phrases ("in order to").<br>
+              <strong>Polish:</strong> Cleans spaces, normalizes list layout syntax, and strips unnecessary empty blocks.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final Call to Action -->
+    <section class="cta-section">
+      <div class="wrap">
+        <div class="cta-container reveal">
+          <h2>Be the first to squeeze your prompts.</h2>
+          <p>Squeeze Chrome Extension is launching soon on the Chrome Web Store! Join our VIP waitlist today to get early access and exclusive updates.</p>
+          <button class="btn primary open-waitlist-btn">Join Waitlist - Get Early Access</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-brand-col">
+          <a class="brand" href="#top">
+            <div class="logo-container">
+              <img src="logo.svg" alt="Squeeze Logo" width="20" height="20" style="display: block;">
+            </div>
+            Squeeze <span class="highlight">for Claude</span>
+          </a>
+          <p>A client-side prompt trimmer chrome extension for developers on Claude.ai. Local-first, private, and secure.</p>
+        </div>
+        
+        <div class="foot-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#how-it-works">How it works</a></li>
+            <li><a href="#examples">Examples</a></li>
+            <li><a href="#calculator">Calculator</a></li>
+          </ul>
+        </div>
+        
+        <div class="foot-col">
+          <h4>Developer</h4>
+          <ul>
+            <li><a href="https://github.com" target="_blank">GitHub Repo</a></li>
+            <li><a href="https://github.com" target="_blank">Security Audit</a></li>
+          </ul>
+        </div>
+        
+        <div class="foot-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="foot-bottom">
+        <span>&copy; 2026 Squeeze. Open source MIT license.</span>
+        
+        <div class="foot-controls">
+          <!-- HSL segment selector -->
+          <div class="theme-seg" role="group" aria-label="Select theme">
+            <button class="theme-seg-btn active" data-theme="dark" title="Dark Theme" aria-label="Dark Theme">
+              <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+            <button class="theme-seg-btn" data-theme="light" title="Light Theme" aria-label="Light Theme">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Waitlist Modal -->
+  <div id="waitlistModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button id="closeWaitlistModal" class="modal-close-btn" aria-label="Close modal">&times;</button>
+      
+      <div id="waitlistFormContainer">
+        <div class="modal-header">
+          <div class="modal-badge">
+            <span class="dot pulse"></span>
+            VIP Early Access
+          </div>
+          <h2 id="modalTitle">Join the Squeeze Waitlist</h2>
+          <p class="modal-subtext">
+            The Squeeze Chrome Extension is coming soon! Leave your email and WhatsApp number to lock in your spot and get notified the moment it launches.
+          </p>
+        </div>
+
+        <iframe name="hidden_waitlist_iframe" id="hidden_waitlist_iframe" style="display:none;"></iframe>
+        <form id="waitlistForm" class="waitlist-form" action="https://script.google.com/macros/s/AKfycbygh9Fc9EhLGmV5XnpiJ6mE5DjQT0fiB0dKEwnUXJEnDiSVTn7ATlpA6NRSk6VerJwWyg/exec" method="POST" target="hidden_waitlist_iframe">
+          <div class="form-group">
+            <label for="waitlistEmail">Email Address <span class="req">*</span></label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <input type="email" id="waitlistEmail" name="email" required placeholder="alex@company.com" autocomplete="email">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="waitlistWhatsapp">WhatsApp Number <span class="req">*</span></label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              </svg>
+              <input type="tel" id="waitlistWhatsapp" name="whatsapp" required placeholder="+1 (555) 000-0000 or +91 98765 43210" autocomplete="tel">
+            </div>
+            <span class="input-hint">Include country code (e.g. +1 or +91)</span>
+          </div>
+
+          <div id="waitlistError" class="form-error" style="display: none;"></div>
+
+          <button type="submit" id="waitlistSubmitBtn" class="btn primary full-width">
+            <span class="btn-text">Join VIP Waitlist 🚀</span>
+            <span class="btn-loader" style="display: none;">Saving...</span>
+          </button>
+          
+          <p class="privacy-note">🔒 100% spam-free. We only contact you for launch access.</p>
+        </form>
+      </div>
+
+      <!-- Success State -->
+      <div id="waitlistSuccess" class="waitlist-success" style="display: none;">
+        <div class="success-icon">🎉</div>
+        <h3>You're on the VIP Waitlist!</h3>
+        <p>Thank you for joining! We've saved your details. We'll send your exclusive launch invitation to your <strong>Email</strong> and <strong>WhatsApp</strong> the instant Squeeze drops on the Chrome Web Store.</p>
+        <button id="successCloseBtn" class="btn secondary">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

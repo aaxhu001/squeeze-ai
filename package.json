@@ -1,0 +1,35 @@
+{
+  "name": "squeeze-ai",
+  "version": "1.0.0",
+  "description": "The enterprise context compression layer for AI agents, LLMs, local proxies, and web extensions (60-95% JSON, 15-35% AST Code, Reversible CCR & Output Token Steering).",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "bin": {
+    "squeeze": "./bin/squeeze.js"
+  },
+  "scripts": {
+    "test": "node test_squeeze_upgrade.js",
+    "start": "node ./bin/squeeze.js proxy",
+    "doctor": "node ./bin/squeeze.js doctor"
+  },
+  "keywords": [
+    "context-compression",
+    "llm",
+    "tokens",
+    "claude",
+    "openai",
+    "mcp",
+    "proxy",
+    "headroom",
+    "ai-agents",
+    "cursor",
+    "aider"
+  ],
+  "author": "SQUEEZE Team",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "pdfjs-dist": "^3.11.174",
+    "zod": "^4.4.3"
+  }
+}

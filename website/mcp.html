@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Squeeze MCP — UI Components & Context Compression for AI Coding Agents | Squeeze AI</title>
+  <meta name="description" content="Connect Cursor, Claude Code, Claude Desktop, Windsurf, or any MCP client to Squeeze: compress prompts, JSON payloads, and source code without leaving your editor.">
+  
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Floating Ambient Canvas -->
+  <div class="landing-bg" aria-hidden="true">
+    <canvas id="shapegrid-canvas"></canvas>
+  </div>
+
+  <!-- Outer Layout Container with Side Borders -->
+  <div class="layout-container">
+
+    <!-- Floating Navbar -->
+    <div class="header-wrapper">
+      <header class="hdr-inner">
+        <a class="brand-link" href="index.html">
+          <div class="brand-logo-icon">
+            <img src="logo.svg" alt="Squeeze Logo" width="20" height="20" style="display: block;">
+          </div>
+          Squeeze <span class="highlight">AI</span>
+        </a>
+        
+        <nav class="nav-pill-menu" aria-label="Primary Navigation">
+          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link active" href="mcp.html">CLI & MCP <span class="badge-new">New</span></a>
+          <a class="nav-link" href="index.html#how-it-works">How it works</a>
+          <a class="nav-link" href="index.html#sandbox">Sandbox</a>
+          <a class="nav-link" href="index.html#faq">FAQ</a>
+        </nav>
+        
+        <div class="hdr-actions">
+          <button id="searchTriggerBtn" class="nav-search-btn" title="Search (Cmd+K)">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <span>Search</span>
+            <kbd>⌘K</kbd>
+          </button>
+
+          <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle theme" title="Toggle dark/light theme">
+            <svg id="themeIcon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+
+          <button class="btn primary open-waitlist-btn">Join Waitlist 🚀</button>
+        </div>
+      </header>
+    </div>
+
+    <main id="top" tabindex="-1">
+      
+      <!-- HERO HEADER (Matching 21st.dev/mcp) -->
+      <section class="mcp-hero-section">
+        <div class="wrap">
+          
+          <!-- Round Avatar Logo Badge -->
+          <div class="mcp-avatar-badge">
+            <div class="mcp-avatar-icon">
+              <img src="logo.svg" alt="Squeeze Logo" width="32" height="32">
+            </div>
+          </div>
+
+          <h1 class="mcp-hero-title">
+            Squeeze MCP — Context Compression for AI Coding Agents
+          </h1>
+          
+          <p class="mcp-hero-subtitle">
+            Connect Cursor, Claude Code, Claude Desktop, Windsurf, or any MCP client to the Squeeze engine: search & compress prompts, JSON payloads, and source code without leaving your editor.
+          </p>
+
+        </div>
+      </section>
+
+      <!-- INTERACTIVE MULTI-PLATFORM SETUP SECTION (Matching 21st.dev/mcp) -->
+      <section id="install-guide" style="padding-top: 2rem;">
+        <div class="wrap">
+
+          <div class="install-container">
+            <!-- Top Platform Tabs -->
+            <div class="install-tabs-primary">
+              <button class="install-tab-btn" data-tab="cli"><img class="tab-icon-img" src="icons/terminal.svg" alt="CLI"> CLI</button>
+              <button class="install-tab-btn active" data-tab="claude"><img class="tab-icon-img" src="icons/claude-color.svg" alt="Claude"> Claude</button>
+              <button class="install-tab-btn" data-tab="codex"><img class="tab-icon-img" src="icons/openai-color.svg" alt="Codex"> Codex</button>
+              <button class="install-tab-btn" data-tab="cursor"><img class="tab-icon-img" src="icons/cursor-color.svg" alt="Cursor"> Cursor</button>
+              <button class="install-tab-btn" data-tab="agents"><svg class="tab-icon-svg tab-icon-agents" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> Lovable / Agents</button>
+              <button class="install-tab-btn" data-tab="mcp"><svg class="tab-icon-svg tab-icon-mcp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> MCP</button>
+            </div>
+
+            <!-- Subtabs & Action Bar (For Claude) -->
+            <div class="install-subtabs-row" id="claudeSubtabsRow">
+              <div class="subtabs-group">
+                <button class="subtab-btn active" data-subtab="claude-code">Claude Code</button>
+                <button class="subtab-btn" data-subtab="claude-desktop">Claude Desktop</button>
+              </div>
+
+              <button class="action-copy-prompt-btn" id="copyMasterPromptBtn" title="Copy full Squeeze system prompt for LLMs">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy as prompt</span>
+              </button>
+            </div>
+
+            <!-- TAB CONTENT PANELS -->
+
+            <!-- 1. CLAUDE CODE SUBTAB PANEL -->
+            <div class="install-panel" id="panel-claude-code">
+              <div class="install-steps-list">
+                <div class="install-step-item">
+                  <div class="step-header">1. Add Squeeze MCP to Claude Code</div>
+                  <div class="step-desc">Run the command below in your terminal to register the Squeeze MCP server.</div>
+                  <div class="code-box-container">
+                    <pre><code>claude mcp add --transport http squeeze https://squeeze.ai/api/mcp --header "x-api-key: $API_KEY_SQUEEZE"</code></pre>
+                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+
+                <div class="install-step-item">
+                  <div class="step-header">2. Or write the project config</div>
+                  <div class="step-desc">One command writes <code>.mcp.json</code> for you.</div>
+                  <div class="code-box-container">
+                    <pre><code>npx @squeeze-ai/cli init --client claude --write</code></pre>
+                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+
+                <div class="install-step-item">
+                  <div class="step-header">3. Verify connection</div>
+                  <div class="step-desc">Run <code>claude mcp list</code> and confirm <code>squeeze</code> shows as connected.</div>
+                </div>
+
+                <div class="install-step-item">
+                  <div class="step-header">4. Or install everything as a plugin</div>
+                  <div class="step-desc">One install bundles the MCP server above with the Squeeze skills from the terminal.</div>
+                  <div class="code-box-container">
+                    <pre><code>/plugin marketplace add squeeze/claude-code-plugin
+/plugin install squeeze@squeeze</code></pre>
+                    <button class="code-copy-btn" title="Copy plugin command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. CLAUDE DESKTOP SUBTAB PANEL -->
+            <div class="install-panel" id="panel-claude-desktop" style="display: none;">
+              <div class="install-steps-list">
+                <div class="install-step-item">
+                  <div class="step-header">1. Auto-configure Claude Desktop</div>
+                  <div class="step-desc">One command registers Squeeze in your <code>claude_desktop_config.json</code> file.</div>
+                  <div class="code-box-container">
+                    <pre><code>npx squeeze-ai init --client claude-desktop --write</code></pre>
+                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+
+                <div class="install-step-item">
+                  <div class="step-header">2. Or write the project config manually</div>
+                  <div class="step-desc">Add Squeeze under <code>mcpServers</code> in <code>%APPDATA%\Claude\claude_desktop_config.json</code>:</div>
+                  <div class="code-box-container">
+                    <pre><code>{
+  "mcpServers": {
+    "squeeze": {
+      "command": "node",
+      "args": ["C:/AASHU DEVS/Squeeze/version2/mcp-server.js"]
+    }
+  }
+}</code></pre>
+                    <button class="code-copy-btn" title="Copy JSON config"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. CODEX / OPENAI PANEL -->
+            <div class="install-panel" id="panel-codex" style="display: none;">
+              <div class="install-steps-list">
+                <div class="install-step-item">
+                  <div class="step-header">1. Connect Squeeze to OpenAI / Codex</div>
+                  <div class="step-desc">Run Squeeze local proxy to intercept OpenAI API calls:</div>
+                  <div class="code-box-container">
+                    <pre><code>npx squeeze proxy --target openai</code></pre>
+                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. CURSOR PANEL -->
+            <div class="install-panel" id="panel-cursor" style="display: none;">
+              <div class="install-steps-list">
+                <div class="install-step-item">
+                  <div class="step-header">1. Start Squeeze Local Proxy</div>
+                  <div class="step-desc">Run Squeeze proxy in your terminal to intercept LLM API payloads:</div>
+                  <div class="code-box-container">
+                    <pre><code>npx squeeze proxy --port 8080</code></pre>
+                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+                <div class="install-step-item">
+                  <div class="step-header">2. Update Cursor Model Base URL</div>
+                  <div class="step-desc">In Cursor Settings ➔ Models ➔ OpenAI/Anthropic Base URL, set:</div>
+                  <div class="code-box-container">
+                    <pre><code>http://localhost:8080/v1</code></pre>
+                    <button class="code-copy-btn" title="Copy URL"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. CLI PANEL -->
+            <div class="install-panel" id="panel-cli" style="display: none;">
+              <div class="install-steps-list">
+                <div class="install-step-item">
+                  <div class="step-header">1. Install Squeeze CLI globally</div>
+                  <div class="step-desc">Install Squeeze via npm to run prompt optimization from your terminal:</div>
+                  <div class="code-box-container">
+                    <pre><code>npm install -g squeeze-ai && squeeze --version</code></pre>
+                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. AI AGENTS PANEL -->
+            <div class="install-panel" id="panel-agents" style="display: none;">
+              <div class="install-steps-list">
+                <div class="install-step-item">
+                  <div class="step-header">1. Install Squeeze SDK</div>
+                  <div class="step-desc">Integrate Squeeze context trimming into Node.js or Python agent pipelines:</div>
+                  <div class="code-box-container">
+                    <pre><code>npm install squeeze-ai   # Node.js / TypeScript
+pip install squeeze-ai   # Python</code></pre>
+                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. MCP PANEL -->
+            <div class="install-panel" id="panel-mcp" style="display: none;">
+              <div class="install-steps-list">
+                <div class="install-step-item">
+                  <div class="step-header">1. Start Squeeze Stdio Server</div>
+                  <div class="step-desc">Use the Squeeze stdio MCP server in any custom MCP client host:</div>
+                  <div class="code-box-container">
+                    <pre><code>npx squeeze mcp serve --stdio</code></pre>
+                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- SQUEEZE MCP TOOLS & CAPABILITIES GRID (Matching 21st.dev/mcp catalog) -->
+      <section style="padding-top: 3rem;">
+        <div class="wrap">
+          <div class="section-header">
+            <div class="section-tag">MCP TOOLS CATALOG</div>
+            <h2 class="section-title">Built for AI Agents & Editors</h2>
+            <p class="section-subtitle">
+              Squeeze exposes native MCP tools for Claude Code, Cursor, and VS Code. Search & invoke tools directly in your editor.
+            </p>
+          </div>
+
+          <div class="mcp-tools-grid">
+            <!-- Tool 1: squeeze_trim -->
+            <div class="mcp-tool-card">
+              <div class="tool-card-header">
+                <div class="tool-name">
+                  <span>squeeze_trim</span>
+                  <span class="tool-pill">Core Tool</span>
+                </div>
+                <span class="tool-tag">String Trim</span>
+              </div>
+              <p class="tool-card-desc">
+                Trims greetings ("Hey Claude"), conversational fluff, and pleasantries automatically before sending prompts to the LLM.
+              </p>
+              <div class="tool-card-footer">
+                <code>squeeze_trim({ prompt: string, mode: "squeeze"|"balanced" })</code>
+              </div>
+            </div>
+
+            <!-- Tool 2: squeeze_json -->
+            <div class="mcp-tool-card">
+              <div class="tool-card-header">
+                <div class="tool-name">
+                  <span>squeeze_json</span>
+                  <span class="tool-pill">Payload</span>
+                </div>
+                <span class="tool-tag">60-95% Savings</span>
+              </div>
+              <p class="tool-card-desc">
+                Compresses bulky JSON API responses, database logs, and schema context files while keeping data structures fully valid.
+              </p>
+              <div class="tool-card-footer">
+                <code>squeeze_json({ payload: object, flatten: true })</code>
+              </div>
+            </div>
+
+            <!-- Tool 3: squeeze_dedup -->
+            <div class="mcp-tool-card">
+              <div class="tool-card-header">
+                <div class="tool-name">
+                  <span>squeeze_dedup</span>
+                  <span class="tool-pill">Code AST</span>
+                </div>
+                <span class="tool-tag">Multi-Turn</span>
+              </div>
+              <p class="tool-card-desc">
+                Replaces previously copy-pasted source code blocks across multi-turn chats with lightweight reference hashes.
+              </p>
+              <div class="tool-card-footer">
+                <code>squeeze_dedup({ threadId: string, code: string })</code>
+              </div>
+            </div>
+
+            <!-- Tool 4: squeeze_proxy -->
+            <div class="mcp-tool-card">
+              <div class="tool-card-header">
+                <div class="tool-name">
+                  <span>squeeze_proxy</span>
+                  <span class="tool-pill">Localhost</span>
+                </div>
+                <span class="tool-tag">Cursor / VS Code</span>
+              </div>
+              <p class="tool-card-desc">
+                Launches a zero-latency local HTTP proxy on <code>http://localhost:8080</code> for seamless IDE integration.
+              </p>
+              <div class="tool-card-footer">
+                <code>squeeze_proxy({ port: 8080, target: "claude" })</code>
+              </div>
+            </div>
+
+            <!-- Tool 5: squeeze_prompt -->
+            <div class="mcp-tool-card">
+              <div class="tool-card-header">
+                <div class="tool-name">
+                  <span>squeeze_prompt</span>
+                  <span class="tool-pill">System Prompt</span>
+                </div>
+                <span class="tool-tag">LLM Instructions</span>
+              </div>
+              <p class="tool-card-desc">
+                Generates a master Squeeze system prompt instruction block for ChatGPT, Claude web, or Gemini models.
+              </p>
+              <div class="tool-card-footer">
+                <code>squeeze_prompt({ targetModel: "claude-sonnet-5" })</code>
+              </div>
+            </div>
+
+            <!-- Tool 6: squeeze_ast -->
+            <div class="mcp-tool-card">
+              <div class="tool-card-header">
+                <div class="tool-name">
+                  <span>squeeze_ast</span>
+                  <span class="tool-pill">Parser</span>
+                </div>
+                <span class="tool-tag">TypeScript / JS</span>
+              </div>
+              <p class="tool-card-desc">
+                Performs AST-based syntax whitespace compression and comment stripping for source code files.
+              </p>
+              <div class="tool-card-footer">
+                <code>squeeze_ast({ code: string, stripComments: true })</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ ACCORDION SECTION -->
+      <section id="faq">
+        <div class="wrap">
+          <div class="section-header">
+            <div class="section-tag">FAQ</div>
+            <h2 class="section-title">MCP Frequently Asked Questions</h2>
+            <p class="section-subtitle">
+              Learn how Squeeze MCP integrates with your AI coding agents and local IDEs.
+            </p>
+          </div>
+
+          <div class="faq-list">
+            <div class="faq-item active">
+              <button class="faq-question">
+                <span>What transport protocols does Squeeze MCP support?</span>
+                <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer">
+                Squeeze MCP supports both <code>stdio</code> transport (for Claude Desktop and local CLI clients) and <code>HTTP / SSE</code> transport for remote agent services.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Is my prompt and code data private when using Squeeze MCP?</span>
+                <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer">
+                Yes! Squeeze MCP runs 100% locally on your machine via stdio or local proxy. No code or prompt payload is ever transmitted to remote cloud servers.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>How do I verify Squeeze MCP is active in Cursor or Claude Code?</span>
+                <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <div class="faq-answer">
+                In Claude Code, run <code>claude mcp list</code> in your terminal. In Claude Desktop, check <strong>Settings ➔ Developer</strong>. In Cursor, check <strong>Cursor Settings ➔ Features ➔ MCP Servers</strong>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="wrap">
+        <div class="footer-grid">
+          <div>
+            <a class="brand-link" href="index.html" style="margin-bottom: 1rem; display: inline-flex;">
+              <div class="brand-logo-icon">
+                <img src="logo.svg" alt="Squeeze Logo" width="20" height="20" style="display: block;">
+              </div>
+              Squeeze <span class="highlight">AI</span>
+            </a>
+            <p style="font-size: 0.88rem; color: var(--fg-muted); line-height: 1.6; max-width: 20rem;">
+              The client-side context compression layer for developers on Claude, Cursor, and AI Agents.
+            </p>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Product</div>
+            <ul class="footer-links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="mcp.html">CLI & MCP</a></li>
+              <li><a href="index.html#how-it-works">How it works</a></li>
+              <li><a href="index.html#sandbox">Sandbox</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Resources</div>
+            <ul class="footer-links">
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="https://github.com" target="_blank">GitHub Repo</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="footer-col-title">System Status</div>
+            <div class="status-pill">
+              <span class="pulse-dot"></span>
+              All Systems Operational
+            </div>
+            <p style="font-size: 0.78rem; color: var(--fg-muted); margin-top: 0.75rem;">
+              MCP Stdio Server: Active<br>
+              Local Proxy: v2.0.4
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span>&copy; 2026 Squeeze AI. Open source MIT license.</span>
+          <span>Made for Claude, Cursor & AI Developers</span>
+        </div>
+      </div>
+    </footer>
+
+  </div> <!-- End Layout Container -->
+
+  <!-- Toast Popup -->
+  <div id="toastPopup" class="toast-popup">Copied to clipboard! ✓</div>
+
+  <!-- Search Modal (Cmd + K) -->
+  <div id="searchModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card" style="max-width: 520px; padding: 1.5rem;">
+      <button id="closeSearchModal" class="modal-close-btn">&times;</button>
+      <div style="display: flex; align-items: center; gap: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--fg-muted);">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search MCP tools, commands, or docs..." style="width: 100%; border: none; background: transparent; color: var(--fg-bright); font-size: 1rem; outline: none;">
+      </div>
+      <div id="searchResults" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 260px; overflow-y: auto;">
+        <a href="#install-guide" class="search-result-item">
+          <span style="font-weight: 600; color: var(--fg-bright);">claude mcp add</span>
+          <span style="font-size: 0.78rem; color: var(--fg-muted);">Register Squeeze MCP server in Claude Code</span>
+        </a>
+        <a href="#install-guide" class="search-result-item">
+          <span style="font-weight: 600; color: var(--fg-bright);">claude_desktop_config.json</span>
+          <span style="font-size: 0.78rem; color: var(--fg-muted);">Claude Desktop MCP configuration</span>
+        </a>
+        <a href="#install-guide" class="search-result-item">
+          <span style="font-weight: 600; color: var(--fg-bright);">squeeze_trim</span>
+          <span style="font-size: 0.78rem; color: var(--fg-muted);">MCP tool for trimming greetings & pleasantries</span>
+        </a>
+        <a href="#install-guide" class="search-result-item">
+          <span style="font-weight: 600; color: var(--fg-bright);">squeeze_json</span>
+          <span style="font-size: 0.78rem; color: var(--fg-muted);">MCP tool for 60-95% JSON payload compression</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

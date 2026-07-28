@@ -1,0 +1,5 @@
+# .env (NEVER commit this file)
+.env
+.env.local
+node_modules/
+*.log

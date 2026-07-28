@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Squeeze Dashboard (Beta)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <img src="icons/icon48.png" width="28" height="28" alt="Squeeze Logo">
+        </div>
+        <span class="logo-text">Squeeze <span class="highlight">for Claude</span></span>
+      </div>
+      <div class="status-badge" id="statusBadge">
+        <span class="dot"></span>
+        <span class="text">Ready</span>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" data-tab="dashboard">
+        <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+        Dashboard
+      </button>
+      <button class="tab-btn" data-tab="settings">
+        <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Settings
+      </button>
+      <button class="tab-btn" data-tab="vault">
+        <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Context Vault
+      </button>
+      <button class="tab-btn" data-tab="premium">
+        <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        Premium
+      </button>
+    </div>
+
+    <!-- Content Sections -->
+    <main class="app-content">
+      <!-- Dashboard Tab -->
+      <section id="dashboardTab" class="tab-pane active">
+        <!-- Stats Cards Grid -->
+        <div class="stats-grid">
+          <div class="stat-card pink-glow">
+            <span class="stat-label">Prompts Squeezed</span>
+            <span class="stat-value" id="statPrompts">0</span>
+            <div class="stat-decorator">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          
+          <div class="stat-card cyan-glow">
+            <span class="stat-label">Tokens Saved</span>
+            <span class="stat-value" id="statTokens">0</span>
+            <div class="stat-decorator">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="cost-card purple-glow">
+          <div class="cost-info">
+            <span class="cost-label">Estimated Money Saved</span>
+            <span class="cost-value" id="statCost">$0.00</span>
+          </div>
+          <div class="cost-visual">
+            <span class="cost-subtext">Based on Sonnet 5 / Fable 5 input rates</span>
+          </div>
+        </div>
+
+        <!-- Dynamic message or current status -->
+        <div class="info-card">
+          <div class="info-header">
+            <span class="info-title">Active Optimizer</span>
+            <span class="info-engine-badge" id="infoEngine">Local Heuristics</span>
+          </div>
+          <p class="info-text">
+            Using <span id="infoMode">Balanced</span> compression mode. Running offline with heuristic rules. Start typing inside Claude.ai and click the widget to squeeze your prompts.
+          </p>
+        </div>
+
+        <!-- Context Capture (TextRank Summarizer) -->
+        <div class="info-card purple-glow" style="margin-top: 10px;">
+          <div class="info-header">
+            <span class="info-title" style="color: #da7040;">Context Capture</span>
+            <span class="info-engine-badge" style="background: rgba(218, 112, 64, 0.1); border-color: rgba(218, 112, 64, 0.25); color: #da7040;">100% Local TextRank</span>
+          </div>
+          <p class="info-text">
+            Extractive TF-IDF + PageRank graph summarizer. Scrapes active chat tab context and formats a zero-loss markdown capsule to clipboard.
+          </p>
+          <button type="button" class="submit-btn" id="squeezeChatBtn" style="margin-top: 10px; background: linear-gradient(90deg, #b5603f 0%, #da7040 100%);">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: sub;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Squeeze This Chat</span>
+          </button>
+          <div id="squeezeChatFeedback" class="save-feedback" style="color: #05f29e; margin-top: 8px;">Context Captured & Copied!</div>
+        </div>
+      </section>
+
+      <!-- Settings Tab -->
+      <section id="settingsTab" class="tab-pane">
+        <form id="settingsForm" class="settings-form">
+          
+          <!-- Default Compression Profile -->
+          <div class="form-group">
+            <label>Optimization Mode</label>
+            <div class="radio-tiles">
+              <label class="radio-tile">
+                <input type="radio" name="optimizationMode" value="squeeze">
+                <span class="tile-content">
+                  <span class="tile-title">Squeeze</span>
+                  <span class="tile-desc">Telegraphic shorthand, drops articles & abbreviations.</span>
+                </span>
+              </label>
+              <label class="radio-tile">
+                <input type="radio" name="optimizationMode" value="balanced" checked>
+                <span class="tile-content">
+                  <span class="tile-title">Balanced</span>
+                  <span class="tile-desc">Deletes opening greetings and standard polite filler.</span>
+                </span>
+              </label>
+              <label class="radio-tile">
+                <input type="radio" name="optimizationMode" value="polish">
+                <span class="tile-content">
+                  <span class="tile-title">Polish</span>
+                  <span class="tile-desc">Formats list bullet syntax and heading layouts.</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Heuristic Rule Customization Checkboxes -->
+          <div class="form-group">
+            <label>Active Rules Customization</label>
+            <div class="checkbox-group">
+              <label class="checkbox-container">
+                <input type="checkbox" id="ruleStripGreetings" name="ruleStripGreetings" checked>
+                <div class="checkbox-label-wrapper">
+                  <span class="checkbox-label">Strip Greetings & Politeness</span>
+                  <span class="checkbox-desc">Deletes openings/closings like "hello", "please write", "thanks".</span>
+                </div>
+              </label>
+              
+              <label class="checkbox-container">
+                <input type="checkbox" id="ruleSimplifyPhrases" name="ruleSimplifyPhrases" checked>
+                <div class="checkbox-label-wrapper">
+                  <span class="checkbox-label">Simplify Verbose Phrases</span>
+                  <span class="checkbox-desc">Shortens wordy phrases (e.g. "in order to" -> "to", "due to" -> "because").</span>
+                </div>
+              </label>
+              
+              <label class="checkbox-container">
+                <input type="checkbox" id="ruleAbbreviate" name="ruleAbbreviate" checked>
+                <div class="checkbox-label-wrapper">
+                  <span class="checkbox-label">Abbreviate Technical Terms</span>
+                  <span class="checkbox-desc">Shortens "function" -> "fn", "database" -> "DB" (primarily Squeeze mode).</span>
+                </div>
+              </label>
+              
+              <label class="checkbox-container">
+                <input type="checkbox" id="ruleStripArticles" name="ruleStripArticles" checked>
+                <div class="checkbox-label-wrapper">
+                  <span class="checkbox-label">Strip Articles & Helpers (Squeeze)</span>
+                  <span class="checkbox-desc">Aggressive telegraphic mode; drops "the", "a", "an", auxiliary verbs.</span>
+                </div>
+              </label>
+              
+              <label class="checkbox-container">
+                <input type="checkbox" id="rulePolishMarkdown" name="rulePolishMarkdown" checked>
+                <div class="checkbox-label-wrapper">
+                  <span class="checkbox-label">Polish Markdown & Spacing</span>
+                  <span class="checkbox-desc">Cleans spaces, normalize bullet points, and formats headings correctly.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Save Button -->
+          <button type="submit" class="submit-btn" id="saveBtn">
+            <span>Save Rules</span>
+            <div class="btn-glow"></div>
+          </button>
+          
+          <div id="saveFeedback" class="save-feedback">Rules Saved Successfully!</div>
+        </form>
+      </section>
+
+      <!-- Context Vault Tab -->
+      <section id="vaultTab" class="tab-pane">
+        <div class="vault-container">
+          <!-- Personal Preferences -->
+          <div class="vault-section">
+            <h3 class="vault-section-title">Personal Preferences (Global Profile)</h3>
+            <p class="vault-section-desc">Global background and guidelines (e.g. coding style, preferred tech stack) injected into queries.</p>
+            <textarea id="vaultPreferences" class="vault-textarea" placeholder="Example: I am a Node.js and TypeScript developer. Prefer functional programming. Write detailed docstrings. Target ES2022."></textarea>
+            <label class="checkbox-container inline-checkbox">
+              <input type="checkbox" id="vaultPrefAlwaysInject" name="vaultPrefAlwaysInject" checked>
+              <div class="checkbox-label-wrapper">
+                <span class="checkbox-label">Always Inject Preferences</span>
+                <span class="checkbox-desc">Appends these guidelines to all optimized prompts.</span>
+              </div>
+            </label>
+          </div>
+
+          <!-- Local Guidelines (Files) -->
+          <div class="vault-section">
+            <h3 class="vault-section-title">Local Context Files</h3>
+            <p class="vault-section-desc">Load reference guides or codebase specs (.txt, .md, .json) to inject when related keywords are detected.</p>
+            
+            <div class="file-uploader" id="vaultDropZone">
+              <input type="file" id="vaultFileInput" accept=".txt,.md,.json" multiple style="display: none;">
+              <svg class="upload-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <span>Drag & drop files or <span class="browse-link" id="vaultBrowseLink">browse</span></span>
+            </div>
+
+            <div class="vault-files-wrapper">
+              <ul class="vault-files-list" id="vaultFileList">
+                <li class="empty-list-msg">No files uploaded to the vault yet.</li>
+              </ul>
+            </div>
+
+            <label class="checkbox-container inline-checkbox">
+              <input type="checkbox" id="vaultSmartTriggers" name="vaultSmartTriggers" checked>
+              <div class="checkbox-label-wrapper">
+                <span class="checkbox-label">Smart Keyword Triggering</span>
+                <span class="checkbox-desc">Only inject files whose names or keywords match the prompt.</span>
+              </div>
+            </label>
+          </div>
+
+          <!-- Unabyss / MCP Connector -->
+          <div class="vault-section">
+            <h3 class="vault-section-title">Unabyss / MCP Endpoint Connector</h3>
+            <p class="vault-section-desc">Connect to a local server or Model Context Protocol endpoint to query dynamic project context.</p>
+            
+            <div class="connector-row">
+              <input type="text" id="vaultServerUrl" class="connector-input" placeholder="e.g. http://localhost:8000/query">
+              <button type="button" id="vaultTestServerBtn" class="connector-btn">Test</button>
+            </div>
+            <div class="connector-status-row">
+              <span id="vaultServerStatus" class="connector-status status-offline">Offline</span>
+              <label class="switch-container">
+                <input type="checkbox" id="vaultServerEnabled">
+                <span class="switch-label">Enable Endpoint Query</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Premium Tab -->
+      <section id="premiumTab" class="tab-pane">
+        <form id="premiumForm" class="settings-form">
+          <!-- Premium Overview Card -->
+          <div class="info-card purple-glow" style="margin-bottom: 8px;">
+            <div class="info-header">
+              <span class="info-title" style="color: #e09a2e;">Squeeze Premium</span>
+              <span class="info-engine-badge" id="premiumStatus" style="background: rgba(224, 154, 46, 0.08); border-color: rgba(224, 154, 46, 0.2); color: #e09a2e;">Inactive</span>
+            </div>
+            <p class="info-text">
+              Unlock standalone <strong>Smart Model Routing</strong> for Claude & Gemini. Analyze prompt complexity automatically to select the most cost-efficient models in real-time.
+            </p>
+          </div>
+
+          <!-- License Key Input -->
+          <div class="form-group">
+            <label for="premiumKey">License Validation Key</label>
+            <input type="password" id="premiumKey" name="premiumKey" placeholder="Enter SQ-PRO-XXXXXX...">
+            <span class="helper-text">Register code from Squeeze premium checkout. Standard developer credentials run locally.</span>
+          </div>
+
+          <!-- Router Controls (Shown conditionally via JS) -->
+          <div id="routerControls" style="display: none;">
+            <div class="form-group">
+              <label>Router Settings</label>
+              <div class="checkbox-group">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="routerAutoSwitch" name="routerAutoSwitch">
+                  <div class="checkbox-label-wrapper">
+                    <span class="checkbox-label">Auto-Switch Models</span>
+                    <span class="checkbox-desc">Fuzzy switch model selection without warning badges.</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Routing Stats Cards -->
+            <div class="stats-grid" style="margin-top: 8px;">
+              <div class="stat-card cyan-glow" style="padding: 10px;">
+                <span class="stat-label">Routes Swapped</span>
+                <span class="stat-value" id="statRouterSwitches" style="font-size: 1.2rem;">0</span>
+              </div>
+              <div class="stat-card pink-glow" style="padding: 10px;">
+                <span class="stat-label">Tips Shown</span>
+                <span class="stat-value" id="statRouterShown" style="font-size: 1.2rem;">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save Button -->
+          <button type="submit" class="submit-btn" id="premiumSaveBtn" style="background: linear-gradient(90deg, #b5603f 0%, #e09a2e 100%);">
+            <span>Verify & Save</span>
+            <div class="btn-glow"></div>
+          </button>
+          
+          <div id="premiumFeedback" class="save-feedback" style="color: #e09a2e;">Premium Status Saved!</div>
+        </form>
+      </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="app-footer">
+      <span>Squeeze Beta (Local Heuristics)</span>
+      <a href="https://github.com" target="_blank" class="footer-link">Documentation</a>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
