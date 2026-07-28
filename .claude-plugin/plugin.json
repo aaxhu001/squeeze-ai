@@ -11,7 +11,7 @@
   "mcpServers": {
     "squeeze": {
       "command": "node",
-      "args": ["${pluginDir}/mcp-server.js"]
+      "args": ["mcp-server.js"]
     }
   }
 }
