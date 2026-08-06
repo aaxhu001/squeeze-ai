@@ -98,46 +98,7 @@ class SqueezeProxyServer {
       return;
     }
 
-    // Endpoint: Live Web Dashboard
-    if (p === '/dashboard' || p === '/dashboard/') {
-      const fs = require('fs');
-      const path = require('path');
-      const dashboardPath = path.join(__dirname, 'dashboard', 'public', 'index.html');
-      if (fs.existsSync(dashboardPath)) {
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(fs.readFileSync(dashboardPath, 'utf8'));
-        return;
-      }
-    }
-
-    // Endpoint: Dashboard API Telemetry
-    if (p === '/api/stats') {
-      const ccrStats = globalCCR.stats();
-      const statsData = this.getStats();
-      const saved = statsData.totalSavedTokens || 0;
-      const usdSaved = (saved / 1000) * 0.003; // Standard $0.003 per 1k tokens
-      const inrSaved = usdSaved * 84.0; // ₹84 per $1 USD
-
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        netTokensSaved: saved,
-        estimatedCostSavedUSD: usdSaved,
-        estimatedCostSavedINR: inrSaved,
-        memoryCacheHits: ccrStats.entries || 0,
-        totalSessions: statsData.requestsProcessed || 0,
-        totalRawTokens: statsData.totalOriginalTokens || 0,
-        totalSqueezeTokens: statsData.totalCompressedTokens || 0
-      }));
-      return;
-    }
-
-    if (p === '/api/memory') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(globalCCR.stats()));
-      return;
-    }
-
-    // Endpoint: Stats dashboard JSON
+    // Endpoint: Stats dashboard
     if (parsedUrl.pathname === '/admin/stats') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({

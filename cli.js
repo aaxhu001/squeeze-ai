@@ -33,6 +33,49 @@ if (hasSelfHealFlag) {
   }
 }
 
+function renderProgressBar(rawTokens, squeezeTokens) {
+  const saved = Math.max(0, rawTokens - squeezeTokens);
+  const ratio = rawTokens > 0 ? (saved / rawTokens) : 0;
+  const percent = Math.round(ratio * 100);
+  const totalBlocks = 20;
+  const filledBlocks = Math.round(ratio * totalBlocks);
+  const emptyBlocks = totalBlocks - filledBlocks;
+  const bar = '█'.repeat(filledBlocks) + '░'.repeat(emptyBlocks);
+  return `[${bar}] ${percent}% saved (${saved} tokens reduction)`;
+}
+
+function enableInteractiveKeypress() {
+  if (process.stdin.isTTY) {
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    process.stdin.setEncoding('utf8');
+    process.stdin.on('data', (key) => {
+      if (key === '\u0003') { // Ctrl+C
+        process.exit();
+      }
+      if (key.toLowerCase() === 'h') {
+        const current = process.env.ENABLE_SQUEEZE_SELF_HEAL === 'true';
+        const next = !current;
+        process.env.ENABLE_SQUEEZE_SELF_HEAL = String(next);
+        squeeze.setFeatureFlag('ENABLE_SQUEEZE_SELF_HEAL', next);
+        console.log(`\n🛡️ [TUI] Auto-Heal Feature Flag toggled to: ${next ? 'ENABLED ✅' : 'DISABLED ❌'}`);
+      }
+      if (key.toLowerCase() === 'd') {
+        console.log('\n🌐 [TUI] Launching Local Analytics Dashboard (http://localhost:3000)...');
+        const dashboardServer = new SqueezeDashboardServer({ port: 3000 });
+        dashboardServer.start().then(() => {
+          dashboardServer.openInBrowser();
+        }).catch(err => {
+          if (err.code === 'EADDRINUSE') {
+            console.log('ℹ️ Dashboard is already active on http://localhost:3000');
+            dashboardServer.openInBrowser();
+          }
+        });
+      }
+    });
+  }
+}
+
 const command = args[0] || 'help';
 
 switch (command) {
@@ -139,20 +182,26 @@ switch (command) {
     const rawSaved = stats.netTokensSaved || Math.max(0, stats.totalRawTokens - stats.totalSqueezeTokens);
     const usdSaved = (stats.estimatedCostSavedUSD !== undefined ? stats.estimatedCostSavedUSD : (rawSaved / 1000 * 0.003)).toFixed(2);
     const inrSaved = (stats.estimatedCostSavedINR !== undefined ? stats.estimatedCostSavedINR : (usdSaved * 84.00)).toFixed(2);
+    const progressBar = renderProgressBar(stats.totalRawTokens, stats.totalSqueezeTokens);
 
     console.log(`
 ====================================================
-⚡ SQUEEZE AI Savings Analytics Dashboard
+⚡ SQUEEZE AI Interactive Terminal Telemetry Dashboard
 ====================================================
-Total Self-Healing Sessions : ${stats.totalSessions}
-Total Raw Error Tokens      : ${stats.totalRawTokens}
-Total SQUEEZE Tokens Used   : ${stats.totalSqueezeTokens}
-Net Context Tokens Saved    : ${rawSaved} tokens
-Estimated USD Cost Saved    : $${usdSaved}
-Estimated INR Cost Saved    : ₹${inrSaved}
-Instant Memory Cache Hits   : ${stats.memoryCacheHits} (Zero-Token Fixes)
+📌 Status Indicator          : 🟢 ACTIVE (v1.0.0-pro)
+📊 Token Reduction Progress  : ${progressBar}
+🔢 Total Self-Healing Sessions: ${stats.totalSessions}
+📥 Total Raw Error Tokens     : ${stats.totalRawTokens}
+📤 Total SQUEEZE Tokens Used  : ${stats.totalSqueezeTokens}
+⚡ Net Context Tokens Saved   : ${rawSaved} tokens
+💵 Estimated USD Cost Saved   : $${usdSaved}
+₹  Estimated INR Cost Saved   : ₹${inrSaved}
+🧠 Instant Memory Cache Hits  : ${stats.memoryCacheHits} (Zero-Token Fixes)
+====================================================
+⌨️ Interactive Shortcuts: Press 'H' (Auto-Heal Toggle) | Press 'D' (Launch Dashboard)
 ====================================================
 `);
+    enableInteractiveKeypress();
     break;
   }
 
@@ -180,7 +229,7 @@ Usage:
   squeeze wrap <agent> [--self-heal]      Launch coding agent (claude, cursor) through proxy
   squeeze heal <prompt> [--test-cmd "..."] Run standalone self-healing loop with custom test command
   squeeze doctor                           Check health of proxy & compression pipeline
-  squeeze stats                            Display live token savings statistics
+  squeeze stats                            Display live token savings statistics & TUI
   squeeze dashboard                        Launch local analytics web dashboard (http://localhost:3000)
   squeeze mcp                              Run MCP stdio server
     `);
