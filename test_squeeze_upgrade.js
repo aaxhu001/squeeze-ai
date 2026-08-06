@@ -4,11 +4,20 @@
  */
 
 const assert = require('assert');
-const ContentRouter = require('./Squeeze_Internal_Pro/modules/router.js');
-const SmartJSONCrusher = require('./Squeeze_Internal_Pro/modules/json-crusher.js');
-const CodeCompressor = require('./Squeeze_Internal_Pro/modules/code-compressor.js');
-const { globalCCR } = require('./Squeeze_Internal_Pro/modules/ccr-store.js');
-const OutputShaper = require('./Squeeze_Internal_Pro/modules/output-shaper.js');
+let ContentRouter, SmartJSONCrusher, CodeCompressor, globalCCR, OutputShaper;
+try {
+  ContentRouter = require('./SQUEEZE main/modules/router.js');
+  SmartJSONCrusher = require('./SQUEEZE main/modules/json-crusher.js');
+  CodeCompressor = require('./SQUEEZE main/modules/code-compressor.js');
+  globalCCR = require('./SQUEEZE main/modules/ccr-store.js').globalCCR;
+  OutputShaper = require('./SQUEEZE main/modules/output-shaper.js');
+} catch (e) {
+  ContentRouter = require('./Squeeze_Internal_Pro/modules/router.js');
+  SmartJSONCrusher = require('./Squeeze_Internal_Pro/modules/json-crusher.js');
+  CodeCompressor = require('./Squeeze_Internal_Pro/modules/code-compressor.js');
+  globalCCR = require('./Squeeze_Internal_Pro/modules/ccr-store.js').globalCCR;
+  OutputShaper = require('./Squeeze_Internal_Pro/modules/output-shaper.js');
+}
 const SqueezeProxyServer = require('./proxy-server.js');
 
 console.log('===================================================');

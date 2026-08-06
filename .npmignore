@@ -1,0 +1,10 @@
+# Exclude dev & website files from npm package
+website/
+.antigravity/
+.gemini/
+.git/
+.gitignore
+*.log
+test_*.js
+verify_*.js
+install.cmd

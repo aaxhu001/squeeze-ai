@@ -1,896 +1,1175 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Squeeze AI - The Context Compression Layer for AI Agents & LLMs</title>
-  <meta name="description" content="Squeeze compresses everything your AI reads — prompts, API logs, JSON payloads, source code, and conversation history — before it hits Claude, Cursor, or OpenAI. 100% local and private.">
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0NZVBZTH4P"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-0NZVBZTH4P');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Squeeze AI — Local Compressor for LLMs</title>
+<meta name="description" content="Stop hitting token limits. Squeeze compresses raw logs, JSON, and AST code 100% locally before sending to Claude & Cursor — unlock up to 99% context headroom.">
+
+<!-- AI & Chatbot Crawler Permissions -->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="googlebot" content="index, follow">
+<meta name="bingbot" content="index, follow">
+<meta name="GPTBot" content="index, follow">
+<meta name="ClaudeBot" content="index, follow">
+<meta name="Claude-User" content="index, follow">
+<meta name="Claude-SearchBot" content="index, follow">
+<link rel="author text" type="text/plain" href="llms.txt">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<!-- Open Graph & Social Cards -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://squeeze-ai.surge.sh/">
+<meta property="og:title" content="Squeeze AI — Local Context Compression Layer for LLMs">
+<meta property="og:description" content="Stop hitting token limits. Squeeze compresses raw logs, JSON, and AST code 100% locally before sending to Claude & Cursor.">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="Squeeze AI — Local Context Compression Layer for LLMs">
+<meta property="twitter:description" content="Stop hitting token limits. Squeeze compresses raw logs, JSON, and AST code 100% locally before sending to Claude & Cursor.">
+
+<!-- Stylesheet -->
+<link rel="stylesheet" href="index.css">
   
-  <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="logo.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
-<body>
+<body id="top">
 
-  <!-- Floating Ambient Canvas -->
-  <div class="landing-bg" aria-hidden="true">
-    <canvas id="shapegrid-canvas"></canvas>
-  </div>
+  <!-- Interactive Background Canvas -->
+  <canvas id="shapegrid-canvas"></canvas>
 
-  <!-- Magic UI Layout Outer Container with Side Border Lines -->
-  <div class="layout-container">
+  <!-- 1. STICKY GLASS NAVBAR -->
+  <header class="navbar-sticky" id="navbar">
+    <div class="container nav-container">
+    <a href="#top" class="brand-logo">
+      <svg class="squeeze-logo-svg" width="34" height="34" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect class="squeeze-logo-box" width="40" height="40" rx="10" fill="#07090E" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
+        <path class="squeeze-logo-star" d="M 20 7 Q 20 20 33 20 Q 20 20 20 33 Q 20 20 7 20 Q 20 20 20 7 Z" fill="#F5C518"/>
+      </svg>
+      Squeeze <span style="color: var(--primary-accent);">AI</span>
+    </a>
 
-    <!-- Floating Glassmorphic Header (Navbar) -->
-    <div class="header-wrapper">
-      <header class="hdr-inner">
-        <a class="brand-link" href="#top">
-          <div class="brand-logo-icon">
-            <img src="logo.svg" alt="Squeeze Logo" width="20" height="20" style="display: block;">
+      <ul class="nav-links">
+        <li><a href="#simulator" class="text-roll">Features</a></li>
+        <li><a href="#stats" class="text-roll">Impact</a></li>
+        <li><a href="#install-guide" class="text-roll">Setup Guide</a></li>
+        <li><a href="#faq" class="text-roll">FAQ</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="#install-guide" class="btn-primary text-roll">Install Squeeze</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. HERO SECTION -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <!-- Badge Chips -->
+      <div class="hero-badge-chips" data-animate="hero-fade-up">
+        <span class="chip-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          100% Local Execution
+        </span>
+        <span class="chip-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          No Login Required
+        </span>
+      </div>
+
+      <!-- Headline with Word Rotator -->
+      <h1 class="hero-title blur-fade">
+        Stop hitting message limits.<br>
+        <span style="color: var(--primary-accent);">Squeeze</span> <span class="word-rotator-wrapper"><span class="word-rotator" id="wordRotator">context.</span></span>
+      </h1>
+
+      <!-- Subheadline (Framed around usage headroom for Claude.ai subscribers) -->
+      <p class="hero-subtitle" data-animate="hero-fade-up" data-delay="200">
+        Squeeze shrinks code, JSON, logs, and long pastes on your computer before they hit Claude.ai or Cursor — so you get up to <strong>99% more context headroom</strong> per chat turn without buying extra accounts.
+      </p>
+
+      <!-- Quickstart Installation Widget -->
+      <div class="quickstart-widget-wrapper" data-animate="hero-fade-up" data-delay="300">
+        <div class="quickstart-widget">
+          <!-- Top Mode Selector Pills -->
+          <div class="qs-mode-tabs">
+            <button class="qs-mode-btn active" data-mode="terminal">TERMINAL</button>
+            <button class="qs-mode-btn" data-mode="agent">AI AGENT</button>
           </div>
-          Squeeze <span class="highlight">AI</span>
-        </a>
-        
-        <nav class="nav-pill-menu" aria-label="Primary Navigation">
-          <a class="nav-link active" href="#top">Home</a>
-          <a class="nav-link" href="mcp.html">CLI & MCP <span class="badge-new">New</span></a>
-          <a class="nav-link" href="#how-it-works">How it works</a>
-          <a class="nav-link" href="#features">Features</a>
-          <a class="nav-link" href="#sandbox">Sandbox</a>
-          <a class="nav-link" href="#faq">FAQ</a>
-        </nav>
-        
-        <div class="hdr-actions">
-          <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle theme" title="Toggle dark/light theme">
-            <svg id="themeIcon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
-          </button>
-          <button class="btn primary open-waitlist-btn">Join Waitlist 🚀</button>
+
+          <!-- Package Manager Pills -->
+          <div class="qs-pkg-tabs" id="qsPkgTabs">
+            <button class="qs-pkg-btn active" data-pkg="npm">npm</button>
+            <button class="qs-pkg-btn" data-pkg="yarn">yarn</button>
+            <button class="qs-pkg-btn" data-pkg="pnpm">pnpm</button>
+            <button class="qs-pkg-btn" data-pkg="bun">bun</button>
+          </div>
+
+          <!-- Command Box with Copy Button -->
+          <div class="qs-command-box">
+            <div class="qs-command-text">
+              <code id="qsCommandCode">npm install -g squeeze-ai</code>
+            </div>
+            <button class="qs-copy-btn" id="qsCopyBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>COPY</span>
+            </button>
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div class="qs-action-btns">
+            <a href="#install-guide" class="qs-btn-primary text-roll">install squeeze</a>
+            <a href="#install-guide" class="qs-btn-secondary text-roll">read the docs</a>
+          </div>
         </div>
-      </header>
+      </div>
+
+      <!-- Hero Visual Mockup -->
+      <div class="hero-visual-wrapper" data-animate="hero-scale-up" data-delay="400">
+        <div class="simulator-window">
+          <div class="window-header">
+            <div class="window-controls">
+              <span class="control red"></span>
+              <span class="control yellow"></span>
+              <span class="control green"></span>
+            </div>
+            <div class="window-title">Squeeze Context Engine — Interactive Simulator</div>
+            <div class="window-status"><span class="pulse-dot"></span> Local Engine Active</div>
+          </div>
+          <div class="simulator-body">
+            <div class="sim-left-panel">
+              <div class="sim-prompt-header">
+                <span>Original Dev Paste (Raw Input)</span>
+                <span class="token-count">Raw: ~1,250 tokens</span>
+              </div>
+              <div class="sim-code-preview diff-del">- Hey Claude, hope you're having a great day! Could you please help me review this code?
+- // [1,200 lines of unchanged React dashboard code copy-pasted...]
+- function calculateTax(amount: number) { return amount * 0.2; }
+- Thanks so much, appreciate it!</div>
+            </div>
+            <div class="sim-right-panel">
+              <div class="panel-stat-card">
+                <div class="stat-label">Context Reduction</div>
+                <div class="stat-val-large" id="sim-trim-val">74% Smaller</div>
+              </div>
+              <div class="panel-stat-card">
+                <div class="stat-label">Squeezed Output</div>
+                <div class="sim-code-preview diff-add" style="margin-top: 6px; font-size: 0.8rem;">Review TypeScript function for potential edge-case errors:
++ function calculateTax(amount: number) { return amount * 0.2; }</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. LOGO / SOCIAL PROOF MARQUEE -->
+  <section class="marquee-section">
+    <div class="container">
+      <div class="squeeze-marquee-box">
+        <div class="squeeze-marquee-label">Built for engineers who work with the tools you know</div>
+        <div class="marquee-wrapper">
+          <div class="marquee-track">
+            <div class="marquee-item" title="Claude.ai"><img src="icons/claude.svg" alt="Claude.ai"></div>
+            <div class="marquee-item" title="Cursor IDE"><img src="icons/cursor.svg" alt="Cursor IDE"></div>
+            <div class="marquee-item" title="ChatGPT &amp; Codex"><img src="icons/openai.svg" alt="ChatGPT"></div>
+            <div class="marquee-item" title="Google Gemini"><img src="icons/gemini.svg" alt="Gemini"></div>
+            <div class="marquee-item" title="VS Code"><img src="icons/vscode.svg" alt="VS Code"></div>
+            <div class="marquee-item" title="LangChain"><img src="icons/langchain.svg" alt="LangChain"></div>
+            <div class="marquee-item" title="Model Context Protocol (MCP)"><img src="icons/mcp.svg" alt="MCP"></div>
+            <div class="marquee-item" title="Anthropic"><img src="icons/anthropic.svg" alt="Anthropic"></div>
+            <div class="marquee-item" title="GitHub"><img src="icons/github.svg" alt="GitHub"></div>
+            <div class="marquee-item" title="JetBrains"><img src="icons/jetbrains.svg" alt="JetBrains"></div>
+            <div class="marquee-item" title="Replit"><img src="icons/replit.svg" alt="Replit"></div>
+            <div class="marquee-item" title="Supabase"><img src="icons/supabase.svg" alt="Supabase"></div>
+            
+            <!-- Duplicate for infinite seamless scroll -->
+            <div class="marquee-item" title="Claude.ai"><img src="icons/claude.svg" alt="Claude.ai"></div>
+            <div class="marquee-item" title="Cursor IDE"><img src="icons/cursor.svg" alt="Cursor IDE"></div>
+            <div class="marquee-item" title="ChatGPT &amp; Codex"><img src="icons/openai.svg" alt="ChatGPT"></div>
+            <div class="marquee-item" title="Google Gemini"><img src="icons/gemini.svg" alt="Gemini"></div>
+            <div class="marquee-item" title="VS Code"><img src="icons/vscode.svg" alt="VS Code"></div>
+            <div class="marquee-item" title="LangChain"><img src="icons/langchain.svg" alt="LangChain"></div>
+            <div class="marquee-item" title="Model Context Protocol (MCP)"><img src="icons/mcp.svg" alt="MCP"></div>
+            <div class="marquee-item" title="Anthropic"><img src="icons/anthropic.svg" alt="Anthropic"></div>
+            <div class="marquee-item" title="GitHub"><img src="icons/github.svg" alt="GitHub"></div>
+            <div class="marquee-item" title="JetBrains"><img src="icons/jetbrains.svg" alt="JetBrains"></div>
+            <div class="marquee-item" title="Replit"><img src="icons/replit.svg" alt="Replit"></div>
+            <div class="marquee-item" title="Supabase"><img src="icons/supabase.svg" alt="Supabase"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- REAL RESULTS — Tiled Byte Strip Visualization -->
+  <section id="real-results" class="section results-section">
+    <div class="container" style="max-width: 980px;">
+      <div class="eyebrow" data-animate="fade-up">Measured, not marketed</div>
+      <h2 class="headline blur-fade">What actually gets <em>smaller</em>.</h2>
+      <p class="subhead" data-animate="fade-up" data-delay="150">Five real pastes, run through Squeeze locally, no server round-trip. Each strip is the paste's bytes, tiled — the filled portion is what survives.</p>
+
+      <div class="squeeze-rows" id="squeeze-rows" data-animate="fade-up" data-delay="200">
+
+        <div class="squeeze-row" data-before="786" data-after="204">
+          <div class="meta">
+            <p class="name">50-row API response</p>
+            <p class="desc">Typical backend JSON you'd paste to debug — user records, status objects, null fields.</p>
+          </div>
+          <div class="visual">
+            <div class="tiles"></div>
+            <div class="readout">
+              <span class="nums"><span class="before">786 B</span> <span class="arrow">→</span> <span class="after">204 B</span></span>
+              <span class="pct">74% smaller</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="squeeze-row" data-before="129" data-after="62">
+          <div class="meta">
+            <p class="name">Over-polite message</p>
+            <p class="desc">"Hey Claude, hope you're well… thanks so much!" — friendly, but you're paying per token for it.</p>
+          </div>
+          <div class="visual">
+            <div class="tiles"></div>
+            <div class="readout">
+              <span class="nums"><span class="before">129 B</span> <span class="arrow">→</span> <span class="after">62 B</span></span>
+              <span class="pct">52% smaller</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="squeeze-row" data-before="395" data-after="283">
+          <div class="meta">
+            <p class="name">Server health JSON</p>
+            <p class="desc">CPU, memory, error logs from a live service — the kind of paste that starts a debugging session.</p>
+          </div>
+          <div class="visual">
+            <div class="tiles"></div>
+            <div class="readout">
+              <span class="nums"><span class="before">395 B</span> <span class="arrow">→</span> <span class="after">283 B</span></span>
+              <span class="pct">28% smaller</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="squeeze-row" data-before="139" data-after="82">
+          <div class="meta">
+            <p class="name">Commented Python script</p>
+            <p class="desc">Data cleanup code — docstrings and comments stripped, the logic itself untouched.</p>
+          </div>
+          <div class="visual">
+            <div class="tiles"></div>
+            <div class="readout">
+              <span class="nums"><span class="before">139 B</span> <span class="arrow">→</span> <span class="after">82 B</span></span>
+              <span class="pct">41% smaller</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="squeeze-row" data-before="1605" data-after="1262">
+          <div class="meta">
+            <p class="name">10 mixed real prompts</p>
+            <p class="desc">Logs, code, YAML, SQL, docs — everyday developer paste-ins, averaged together.</p>
+          </div>
+          <div class="visual">
+            <div class="tiles"></div>
+            <div class="readout">
+              <span class="nums"><span class="before">1,605 B</span> <span class="arrow">→</span> <span class="after">1,262 B</span></span>
+              <span class="pct">21% smaller overall</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="squeeze-notes" data-animate="fade-up" data-delay="300">
+        <div class="squeeze-note">
+          <span class="tag">Nothing is thrown away</span>
+          <p>Squeeze keeps a copy of every trimmed part on your machine. If a model needs the full original later, you pull it back — <strong>a bookmark, not a delete.</strong></p>
+        </div>
+        <div class="squeeze-note">
+          <span class="tag">Honest expectations</span>
+          <p>Logs and JSON compress hardest, up to <strong>99%</strong> on the worst offenders. Small code snippets see modest savings, <strong>5–18%</strong>. Paste big blocks separately for the strongest results.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Squeeze — "Use Squeeze in your agent" section, matching the 21st.dev layout/palette 1:1 -->
+  <style>
+    .sq21 {
+      background: #0a0a0b;
+      color: #ededec;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 100px 24px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* ---------- Top logo row: brand mark + live "active client" badge ---------- */
+    .sq21-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .sq21-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .sq21-logo svg { width: 100%; height: 100%; display: block; }
+
+    .sq21-tool-badge {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: #161617;
+      border: 1px solid #232325;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sq21-tool-icon {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ededec;
+      animation: sq21BadgeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .sq21-tool-icon svg { width: 28px; height: 28px; }
+    .sq21-tool-icon.sq21-leaving {
+      animation: sq21BadgeOut 0.16s ease-in both;
+    }
+
+    @keyframes sq21BadgeIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.85); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes sq21BadgeOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to   { opacity: 0; transform: translateY(-14px) scale(0.85); }
+    }
+
+    .sq21 h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-weight: 400;
+      font-size: clamp(34px, 4.2vw, 46px);
+      letter-spacing: -0.01em;
+      margin: 0 0 18px;
+      color: #f7f6f4;
+    }
+
+    .sq21 p.sub {
+      color: #8a8a8e;
+      font-size: 16px;
+      max-width: 460px;
+      line-height: 1.6;
+      margin: 0 0 40px;
+    }
+
+    /* ---------- Tabs + sliding pill ---------- */
+    .sq21-tabs {
+      position: relative;
+      display: flex;
+      gap: 4px;
+      background: #161617;
+      border: 1px solid #232325;
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+      isolation: isolate;
+    }
+
+    .sq21-tab-pill {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      height: calc(100% - 8px);
+      width: 0;
+      background: #ededec;
+      border-radius: 7px;
+      z-index: 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+      will-change: transform, width;
+    }
+    .sq21-tab-pill.sq21-pill-ready {
+      transition:
+        transform 0.38s cubic-bezier(0.65, 0, 0.35, 1),
+        width 0.38s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .sq21-tab {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border-radius: 7px;
+      font-size: 14px;
+      color: #9a9a9e;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.25s ease;
+    }
+
+    .sq21-tab svg { width: 15px; height: 15px; flex: none; }
+
+    /* Icons use currentColor (with fill-opacity for shading on multi-tone marks
+       like VS Code) so every icon inherits the tab's text color: light gray/white
+       when inactive, solid dark ink once the white pill sits behind it. */
+    .sq21-tab.active {
+      color: #0a0a0b;
+      font-weight: 600;
+    }
+
+    .sq21-tab:not(.active):hover { color: #ededec; }
+
+    .sq21-tab:active { transform: scale(0.96); }
+
+    /* ---------- Panel content swap ---------- */
+    .sq21-panel {
+      width: 100%;
+      max-width: 620px;
+      text-align: left;
+      position: relative;
+    }
+
+    .sq21-tab-content {
+      animation: sq21FadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .sq21-tab-content.sq21-leaving {
+      animation: sq21FadeOut 0.14s ease-in both;
+    }
+
+    @keyframes sq21FadeIn {
+      from { opacity: 0; transform: translateY(6px) scale(0.995); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes sq21FadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-4px); }
+    }
+
+    .sq21-panel-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .sq21-panel h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0;
+      color: #f7f6f4;
+    }
+
+    .sq21-copy-prompt {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #9a9a9e;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.2s ease;
+    }
+    .sq21-copy-prompt:hover { color: #ededec; }
+    .sq21-copy-prompt:active { transform: scale(0.97); }
+
+    .sq21-panel p.desc {
+      color: #8a8a8e;
+      font-size: 14px;
+      margin: 0 0 18px;
+    }
+
+    .sq21-code {
+      position: relative;
+      background: #131314;
+      border: 1px solid #232325;
+      border-radius: 10px;
+      padding: 18px 50px 18px 18px;
+      font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13.5px;
+      line-height: 1.9;
+      color: #ededec;
+      overflow-x: auto;
+      margin-bottom: 22px;
+    }
+    .sq21-code .cmd { color: #f0c94a; }
+    .sq21-code .comment { color: #6c6c70; }
+
+    .sq21-copy-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: transparent;
+      border: 1px solid #2a2a2c;
+      border-radius: 6px;
+      color: #8a8a8e;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    }
+    .sq21-copy-btn:hover { color: #ededec; border-color: #444; }
+    .sq21-copy-btn:active { transform: scale(0.9); }
+    .sq21-copy-btn svg { width: 14px; height: 14px; }
+
+    .sq21-copy-btn.sq21-copied,
+    .sq21-copy-prompt.sq21-copied {
+      color: #6ee7a0 !important;
+      border-color: #2c4c3a;
+    }
+    .sq21-copy-btn .sq21-check,
+    .sq21-copy-prompt .sq21-check {
+      display: inline-flex;
+      animation: sq21Pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes sq21Pop {
+      0%   { transform: scale(0.4); opacity: 0; }
+      60%  { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .sq21-note {
+      font-size: 13px;
+      color: #6c6c70;
+      margin-top: 4px;
+    }
+  </style>
+
+  <section class="sq21" id="install-guide">
+
+    <div class="sq21-logo-row">
+      <div class="sq21-logo">
+        <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" role="img">
+          <title>SQUEEZE mark — dark/gold palette</title>
+          <rect x="0" y="0" width="500" height="500" rx="100" fill="#0A0B0F"/>
+          <path d="M 250,110 C 262,205 245,232 385,250 C 245,268 262,295 250,390 C 238,295 255,268 115,250 C 255,232 238,205 250,110 Z" fill="#F5C518"/>
+        </svg>
+      </div>
+
+      <!-- Badge shows the icon of whichever tab is active, and animates in/out
+           (fade + slide) every time the selection changes — driven from the same
+           click handler that moves the tab pill. -->
+      <div class="sq21-tool-badge" id="sq21ToolBadge">
+        <span class="sq21-tool-icon" data-icon="cli">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 5L11 12L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="19" x2="19" y2="19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </span>
+        <span class="sq21-tool-icon" data-icon="claude" style="display:none;">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z" fill="#D97757" fill-rule="nonzero"></path></svg>
+        </span>
+        <span class="sq21-tool-icon" data-icon="cursor" style="display:none;">
+          <svg fill="currentColor" fill-rule="evenodd" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.106 5.68L12.5.135a.998.998 0 00-.998 0L1.893 5.68a.84.84 0 00-.419.726v11.186c0 .3.16.577.42.727l9.607 5.547a.999.999 0 00.998 0l9.608-5.547a.84.84 0 00.42-.727V6.407a.84.84 0 00-.42-.726zm-.603 1.176L12.228 22.92c-.063.108-.228.064-.228-.061V12.34a.59.59 0 00-.295-.51l-9.11-5.26c-.107-.062-.063-.228.062-.228h18.55c.264 0 .428.286.296.514z"></path></svg>
+        </span>
+        <span class="sq21-tool-icon" data-icon="vscode" style="display:none;">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#sq21vsc-clip0-badge)">
+              <g>
+                <mask id="sq21vsc-mask0-badge" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M70.9119 99.5723C72.4869 100.189 74.2828 100.15 75.8725 99.3807L96.4604 89.4231C98.624 88.3771 100 86.1762 100 83.7616V16.2392C100 13.8247 98.624 11.6238 96.4604 10.5774L75.8725 0.619067C73.7862 -0.389991 71.3446 -0.142885 69.5135 1.19527C69.252 1.38636 69.0028 1.59985 68.769 1.83502L29.3551 37.9795L12.1872 24.88C10.5891 23.6607 8.35365 23.7606 6.86938 25.1178L1.36302 30.1525C-0.452603 31.8127 -0.454583 34.6837 1.35854 36.3466L16.2471 50.0001L1.35854 63.6536C-0.454583 65.3164 -0.452603 68.1876 1.36302 69.8477L6.86938 74.8824C8.35365 76.2395 10.5891 76.34 12.1872 75.1201L29.3551 62.0207L68.769 98.1651C69.3925 98.7923 70.1246 99.2645 70.9119 99.5723ZM75.0152 27.1813L45.1092 50.0001L75.0152 72.8189V27.1813Z" fill="white"/>
+                </mask>
+                <g mask="url(#sq21vsc-mask0-badge)">
+                  <path d="M96.4614 10.593L75.8567 0.62085C73.4717 -0.533437 70.6215 -0.0465506 68.7498 1.83492L1.29834 63.6535C-0.515935 65.3164 -0.513852 68.1875 1.30281 69.8476L6.8125 74.8823C8.29771 76.2395 10.5345 76.339 12.1335 75.1201L93.3604 13.18C96.0854 11.102 100 13.0557 100 16.4939V16.2535C100 13.84 98.6239 11.64 96.4614 10.593Z" fill="currentColor" fill-opacity="0.55"/>
+                  <path d="M96.4614 89.4074L75.8567 99.3797C73.4717 100.534 70.6215 100.047 68.7498 98.1651L1.29834 36.3464C-0.515935 34.6837 -0.513852 31.8125 1.30281 30.1524L6.8125 25.1177C8.29771 23.7605 10.5345 23.6606 12.1335 24.88L93.3604 86.8201C96.0854 88.8985 100 86.9447 100 83.5061V83.747C100 86.1604 98.6239 88.3603 96.4614 89.4074Z" fill="currentColor" fill-opacity="0.75"/>
+                  <path d="M75.8578 99.3807C73.4721 100.535 70.6219 100.047 68.75 98.1651C71.0564 100.483 75 98.8415 75 95.5631V4.43709C75 1.15852 71.0565 -0.483493 68.75 1.83492C70.6219 -0.0467614 73.4721 -0.534276 75.8578 0.618963L96.4583 10.5773C98.6229 11.6237 100 13.8246 100 16.2391V83.7616C100 86.1762 98.6229 88.3761 96.4583 89.4231L75.8578 99.3807Z" fill="currentColor"/>
+                </g>
+              </g>
+            </g>
+            <defs>
+              <clipPath id="sq21vsc-clip0-badge"><rect width="100" height="100" fill="white"/></clipPath>
+            </defs>
+          </svg>
+        </span>
+        <span class="sq21-tool-icon" data-icon="mcp" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M8 12H16M8 12L11 9M8 12L11 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
     </div>
 
-    <main id="top" tabindex="-1">
-      
-      <!-- HERO SECTION WITH RADIAL BACKGROUND GLOW -->
-      <section class="hero-section">
-        <div class="wrap">
-          <div class="hero-badge">
-            <span class="pulse-dot"></span>
-            <span>⚡ Squeeze 2.0 Context Engine is Live</span>
-          </div>
-          
-          <h1 class="hero-headline">
-            Meet Squeeze — <br>Streamline your LLM context & <span class="accent-highlight">token waste.</span>
-          </h1>
-          
-          <p class="hero-subtext">
-            The local-first context compression layer for Claude, Cursor, AI Agents & LLMs. Keeps context windows lean, cuts token waste by 35-95%, and slashes API costs instantly.
-          </p>
-          
-          <div class="hero-cta-group">
-            <button class="btn primary open-waitlist-btn">Join VIP Waitlist 🚀</button>
-            <a class="btn secondary" href="#sandbox">Try Live Sandbox</a>
-          </div>
+    <h2>Use Squeeze in your agent</h2>
+    <p class="sub">Search the catalog, compress prompts, and cut token spend — from the terminal or any MCP client.</p>
 
-          <!-- Hero Showcase Container / Interactive Claude Simulator -->
-          <div class="showcase-wrapper">
-            <div class="showcase-header">
-              <div class="showcase-dots">
-                <span class="showcase-dot"></span>
-                <span class="showcase-dot"></span>
-                <span class="showcase-dot"></span>
-              </div>
-              <div class="showcase-address">claude.ai/chat • Squeeze Active</div>
-              <div style="width: 48px;"></div>
-            </div>
-            
-            <div class="showcase-body">
-              <!-- Simulated Claude UI -->
-              <div class="claude-sim-box">
-                <div class="claude-sim-header">
-                  <div class="claude-avatar">C</div>
-                  <span class="claude-sim-title">Claude Sonnet 5</span>
-                </div>
-                
-                <div class="sim-prompt-box">
-                  <div class="sim-prompt-text" id="mockPromptText">Hey Claude, hope you're doing well! Here is the React dashboard component code again. I made a tiny tweak to the login button style. Could you please review it and check for any bugs? Thanks so much!
+    <div class="sq21-tabs" id="sq21Tabs">
+      <div class="sq21-tab-pill" id="sq21Pill"></div>
 
-```jsx
-// [2,400 lines of unchanged React dashboard code copy-pasted here for the 3rd time in this thread...]
-```</div>
-                  
-                  <div class="sim-prompt-footer">
-                    <div class="sim-model-pill">
-                      <span>Sonnet 5</span>
-                      <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                      </svg>
-                    </div>
-                    <span style="font-size: 0.72rem; color: var(--fg-muted);">⚡ 35% Squeezed</span>
-                  </div>
-                </div>
-              </div>
+      <button class="sq21-tab active" data-tab="cli">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 5L11 12L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="19" x2="19" y2="19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        CLI
+      </button>
+      <button class="sq21-tab" data-tab="claude">
+        <svg height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z" fill="#D97757" fill-rule="nonzero"></path></svg>
+        Claude
+      </button>
+      <button class="sq21-tab" data-tab="cursor">
+        <svg fill="currentColor" fill-rule="evenodd" height="1em" style="flex:none;line-height:1" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M22.106 5.68L12.5.135a.998.998 0 00-.998 0L1.893 5.68a.84.84 0 00-.419.726v11.186c0 .3.16.577.42.727l9.607 5.547a.999.999 0 00.998 0l9.608-5.547a.84.84 0 00.42-.727V6.407a.84.84 0 00-.42-.726zm-.603 1.176L12.228 22.92c-.063.108-.228.064-.228-.061V12.34a.59.59 0 00-.295-.51l-9.11-5.26c-.107-.062-.063-.228.062-.228h18.55c.264 0 .428.286.296.514z"></path></svg>
+        Cursor
+      </button>
+      <button class="sq21-tab" data-tab="vscode">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#sq21vsc-clip0)">
+            <g>
+              <mask id="sq21vsc-mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M70.9119 99.5723C72.4869 100.189 74.2828 100.15 75.8725 99.3807L96.4604 89.4231C98.624 88.3771 100 86.1762 100 83.7616V16.2392C100 13.8247 98.624 11.6238 96.4604 10.5774L75.8725 0.619067C73.7862 -0.389991 71.3446 -0.142885 69.5135 1.19527C69.252 1.38636 69.0028 1.59985 68.769 1.83502L29.3551 37.9795L12.1872 24.88C10.5891 23.6607 8.35365 23.7606 6.86938 25.1178L1.36302 30.1525C-0.452603 31.8127 -0.454583 34.6837 1.35854 36.3466L16.2471 50.0001L1.35854 63.6536C-0.454583 65.3164 -0.452603 68.1876 1.36302 69.8477L6.86938 74.8824C8.35365 76.2395 10.5891 76.34 12.1872 75.1201L29.3551 62.0207L68.769 98.1651C69.3925 98.7923 70.1246 99.2645 70.9119 99.5723ZM75.0152 27.1813L45.1092 50.0001L75.0152 72.8189V27.1813Z" fill="white"/>
+              </mask>
+              <g mask="url(#sq21vsc-mask0)">
+                <path d="M96.4614 10.593L75.8567 0.62085C73.4717 -0.533437 70.6215 -0.0465506 68.7498 1.83492L1.29834 63.6535C-0.515935 65.3164 -0.513852 68.1875 1.30281 69.8476L6.8125 74.8823C8.29771 76.2395 10.5345 76.339 12.1335 75.1201L93.3604 13.18C96.0854 11.102 100 13.0557 100 16.4939V16.2535C100 13.84 98.6239 11.64 96.4614 10.593Z" fill="currentColor" fill-opacity="0.55"/>
+                <path d="M96.4614 89.4074L75.8567 99.3797C73.4717 100.534 70.6215 100.047 68.7498 98.1651L1.29834 36.3464C-0.515935 34.6837 -0.513852 31.8125 1.30281 30.1524L6.8125 25.1177C8.29771 23.7605 10.5345 23.6606 12.1335 24.88L93.3604 86.8201C96.0854 88.8985 100 86.9447 100 83.5061V83.747C100 86.1604 98.6239 88.3603 96.4614 89.4074Z" fill="currentColor" fill-opacity="0.75"/>
+                <path d="M75.8578 99.3807C73.4721 100.535 70.6219 100.047 68.75 98.1651C71.0564 100.483 75 98.8415 75 95.5631V4.43709C75 1.15852 71.0565 -0.483493 68.75 1.83492C70.6219 -0.0467614 73.4721 -0.534276 75.8578 0.618963L96.4583 10.5773C98.6229 11.6237 100 13.8246 100 16.2391V83.7616C100 86.1762 98.6229 88.3761 96.4583 89.4231L75.8578 99.3807Z" fill="currentColor"/>
+              </g>
+            </g>
+          </g>
+          <defs>
+            <clipPath id="sq21vsc-clip0"><rect width="100" height="100" fill="white"/></clipPath>
+          </defs>
+        </svg>
+        VS Code
+      </button>
+      <button class="sq21-tab" data-tab="mcp">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M8 12H16M8 12L11 9M8 12L11 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        MCP
+      </button>
+    </div>
 
-              <!-- Squeeze Overlay Control Panel -->
-              <div class="squeeze-sim-panel">
-                <div class="panel-header-badge">
-                  <div class="panel-title">
-                    <span style="color: var(--accent-color);">⚡</span> Squeeze AI
-                  </div>
-                  <span class="feature-tag" style="color: #4ade80;">Active</span>
-                </div>
+    <div class="sq21-panel" id="sq21Panel">
 
-                <div class="panel-stat-grid">
-                  <div class="stat-metric-card">
-                    <div class="metric-label">Tokens Saved</div>
-                    <div class="metric-val highlight" id="heroStatTokens">1,480</div>
-                  </div>
-                  <div class="stat-metric-card">
-                    <div class="metric-label">Trim Rate</div>
-                    <div class="metric-val" id="heroStatTrim">35%</div>
-                  </div>
-                </div>
-
-                <div style="font-size: 0.76rem; font-weight: 600; color: var(--fg-bright); margin-top: 0.2rem;">Compression Mode</div>
-                <div class="mode-pills">
-                  <button class="mode-pill-btn" data-mode="squeeze">Squeeze</button>
-                  <button class="mode-pill-btn active" data-mode="balanced">Balanced</button>
-                  <button class="mode-pill-btn" data-mode="polish">Polish</button>
-                </div>
-
-                <div style="font-size: 0.74rem; color: var(--fg-muted); display: flex; flex-direction: column; gap: 0.4rem;">
-                  <label style="display: flex; align-items: center; gap: 0.4rem;">
-                    <input type="checkbox" checked disabled> Strip greetings & pleasantries
-                  </label>
-                  <label style="display: flex; align-items: center; gap: 0.4rem;">
-                    <input type="checkbox" checked disabled> Deduplicate unchanged code
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-
+      <!-- Tab 1: CLI -->
+      <div class="sq21-tab-content" data-content="cli">
+        <div class="sq21-panel-row">
+          <h3>Global Installation &amp; Setup</h3>
+          <button class="sq21-copy-prompt" onclick="sq21Copy('npm i -g squeeze-ai\nsqueeze-ai mcp setup', this)">
+            <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><rect x="4" y="4" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/></svg>
+            <span class="sq21-label">Copy commands</span>
+          </button>
         </div>
-      </section>
-
-      <!-- INTEGRATION / SOCIAL PROOF GRID (Magic UI Style) -->
-      <section class="integration-section">
-        <div class="wrap">
-          <p class="integration-label">Native compatibility across top AI models & developer tools</p>
-
-          <div class="integration-grid">
-            <div class="integration-card">
-              <div class="integration-card-content">
-                <img src="icons/claude.svg" width="20" height="20" alt="Claude Icon">
-                <span>Claude Sonnet 5</span>
-              </div>
-              <div class="integration-hover-overlay">
-                <span class="integration-hover-link">Web & Extension →</span>
-              </div>
-            </div>
-
-            <div class="integration-card">
-              <div class="integration-card-content">
-                <img src="icons/cursor.svg" width="20" height="20" alt="Cursor Icon">
-                <span>Cursor & VS Code</span>
-              </div>
-              <div class="integration-hover-overlay">
-                <span class="integration-hover-link">MCP Server →</span>
-              </div>
-            </div>
-
-            <div class="integration-card">
-              <div class="integration-card-content">
-                <img src="icons/openai.svg" width="20" height="20" alt="OpenAI Icon">
-                <span>OpenAI / ChatGPT</span>
-              </div>
-              <div class="integration-hover-overlay">
-                <span class="integration-hover-link">Local Proxy →</span>
-              </div>
-            </div>
-
-            <div class="integration-card">
-              <div class="integration-card-content">
-                <img src="icons/agents.svg" width="20" height="20" alt="Agents Icon">
-                <span>LangChain & Agents</span>
-              </div>
-              <div class="integration-hover-overlay">
-                <span class="integration-hover-link">Node & Python SDK →</span>
-              </div>
-            </div>
-          </div>
+        <p class="desc">One global install; setup command auto-registers Squeeze across all your local AI tools.</p>
+        <div class="sq21-code">
+          <span class="cmd">npm</span> install -g squeeze-ai<br/>
+          <span class="cmd">squeeze-ai</span> mcp setup
+          <button class="sq21-copy-btn" onclick="sq21Copy('npm install -g squeeze-ai\nsqueeze-ai mcp setup', this)">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="4" y="4" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
         </div>
-      </section>
+        <p class="sq21-note">Available CLI tools: <code>squeeze-ai compress</code> · <code>squeeze-ai doctor</code> · <code>squeeze-ai stats</code></p>
+      </div>
 
-      <!-- INTERACTIVE INSTALLATION GUIDE SECTION (21st.dev / Magic UI Style) -->
-      <section id="install-guide">
-        <div class="wrap">
-          <div class="section-header">
-            <div class="section-tag">INSTALLATION GUIDE</div>
-            <h2 class="section-title">Connect Squeeze to your workflow</h2>
-            <p class="section-subtitle">
-              Select your AI model, IDE, or developer tool below to view instant setup instructions.
-            </p>
-          </div>
+      <!-- Tab 2: Claude -->
+      <div class="sq21-tab-content" data-content="claude" style="display:none;">
+        <div class="sq21-panel-row"><h3>Claude Desktop &amp; Claude Code</h3></div>
+        <p class="desc">Run this command in your terminal to auto-inject Squeeze into <code>claude_desktop_config.json</code>:</p>
+        <div class="sq21-code">
+          <span class="cmd">squeeze</span> mcp setup
+          <button class="sq21-copy-btn" onclick="sq21Copy('squeeze mcp setup', this)">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="4" y="4" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <p class="desc" style="margin-top: 14px; margin-bottom: 6px;">Or if running from repository root:</p>
+        <div class="sq21-code">
+          <span class="cmd">node</span> bin/squeeze.js mcp setup
+          <button class="sq21-copy-btn" onclick="sq21Copy('node bin/squeeze.js mcp setup', this)">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="4" y="4" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <p class="sq21-note">Connected tools: <code>squeeze_compress</code> · <code>squeeze_retrieve</code> · <code>squeeze_stats</code> · <code>squeeze_doctor</code></p>
+      </div>
 
-          <div class="install-container">
-            <!-- Primary Platform Tabs -->
-            <div class="install-tabs-primary">
-              <button class="install-tab-btn" data-tab="cli"><img class="tab-icon-img" src="icons/terminal.svg" alt="CLI"> CLI</button>
-              <button class="install-tab-btn active" data-tab="claude"><img class="tab-icon-img" src="icons/claude-color.svg" alt="Claude"> Claude</button>
-              <button class="install-tab-btn" data-tab="chrome"><img class="tab-icon-img" src="icons/chrome.svg" alt="Chrome"> Chrome Extension</button>
-              <button class="install-tab-btn" data-tab="cursor"><img class="tab-icon-img" src="icons/cursor-color.svg" alt="Cursor"> Cursor</button>
-              <button class="install-tab-btn" data-tab="agents"><svg class="tab-icon-svg tab-icon-agents" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> AI Agents</button>
-              <button class="install-tab-btn" data-tab="mcp"><svg class="tab-icon-svg tab-icon-mcp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> MCP</button>
-            </div>
-
-            <!-- Subtabs & Action Bar (For Claude) -->
-            <div class="install-subtabs-row" id="claudeSubtabsRow">
-              <div class="subtabs-group">
-                <button class="subtab-btn active" data-subtab="claude-desktop">Claude Desktop</button>
-                <button class="subtab-btn" data-subtab="claude-code">Claude Code</button>
-              </div>
-
-              <button class="action-copy-prompt-btn" id="copyMasterPromptBtn" title="Copy full Squeeze system prompt for LLMs">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                <span>Copy as prompt</span>
-              </button>
-            </div>
-
-            <!-- TAB CONTENT PANELS -->
-
-            <!-- 1. CLAUDE DESKTOP SUBTAB PANEL -->
-            <div class="install-panel" id="panel-claude-desktop">
-              <div class="install-steps-list">
-                <div class="install-step-item">
-                  <div class="step-header">1. Auto-configure Claude Desktop</div>
-                  <div class="step-desc">One command registers Squeeze in your <code>claude_desktop_config.json</code> file.</div>
-                  <div class="code-box-container">
-                    <pre><code>npx squeeze-ai init --client claude-desktop --write</code></pre>
-                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                  </div>
-                </div>
-
-                <div class="install-step-item">
-                  <div class="step-header">2. Or write the project config manually</div>
-                  <div class="step-desc">Add Squeeze under <code>mcpServers</code> in <code>%APPDATA%\Claude\claude_desktop_config.json</code>:</div>
-                  <div class="code-box-container">
-                    <pre><code>{
+      <!-- Tab 3: Cursor -->
+      <div class="sq21-tab-content" data-content="cursor" style="display:none;">
+        <div class="sq21-panel-row"><h3>Add to Cursor IDE</h3></div>
+        <p class="desc">Run <code>squeeze mcp setup</code> or paste into <code>.cursor/mcp.json</code> at your project root:</p>
+        <div class="sq21-code" style="white-space:pre;">{
   "mcpServers": {
     "squeeze": {
-      "command": "node",
-      "args": ["C:/AASHU DEVS/Squeeze/version2/mcp-server.js"]
+      "command": "squeeze",
+      "args": ["mcp"]
     }
   }
-}</code></pre>
-                    <button class="code-copy-btn" title="Copy JSON config"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                  </div>
-                </div>
-
-                <div class="install-step-item">
-                  <div class="step-header">3. Verify connection</div>
-                  <div class="step-desc">Restart Claude Desktop ➔ Open <strong>Settings ➔ Developer</strong> and confirm <code>squeeze</code> shows as connected.</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 2. CLAUDE CODE SUBTAB PANEL -->
-            <div class="install-panel" id="panel-claude-code" style="display: none;">
-              <div class="install-steps-list">
-                <div class="install-step-item">
-                  <div class="step-header">1. Add Squeeze MCP to Claude Code</div>
-                  <div class="step-desc">Run the command below in your terminal to register the server.</div>
-                  <div class="code-box-container">
-                    <pre><code>claude mcp add squeeze node "C:/AASHU DEVS/Squeeze/version2/mcp-server.js"</code></pre>
-                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                  </div>
-                </div>
-
-                <div class="install-step-item">
-                  <div class="step-header">2. Verify connection</div>
-                  <div class="step-desc">Run <code>claude mcp list</code> and confirm Squeeze shows as connected.</div>
-                  <div class="code-box-container">
-                    <pre><code>claude mcp list</code></pre>
-                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3. CHROME EXTENSION PANEL -->
-            <div class="install-panel" id="panel-chrome" style="display: none;">
-              <div class="install-steps-list">
-                <div class="install-step-item">
-                  <div class="step-header">1. Open Extensions Page</div>
-                  <div class="step-desc">Open Google Chrome or Edge and navigate to <code>chrome://extensions</code>.</div>
-                </div>
-                <div class="install-step-item">
-                  <div class="step-header">2. Enable Developer Mode</div>
-                  <div class="step-desc">Toggle the <strong>Developer mode</strong> switch in the top-right corner.</div>
-                </div>
-                <div class="install-step-item">
-                  <div class="step-header">3. Load Unpacked Extension</div>
-                  <div class="step-desc">Click <strong>Load unpacked</strong> and select the directory:</div>
-                  <div class="code-box-container">
-                    <pre><code>C:\AASHU DEVS\Squeeze\version2</code></pre>
-                    <button class="code-copy-btn" title="Copy path"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 4. CURSOR PANEL -->
-            <div class="install-panel" id="panel-cursor" style="display: none;">
-              <div class="install-steps-list">
-                <div class="install-step-item">
-                  <div class="step-header">1. Start Squeeze Local Proxy</div>
-                  <div class="step-desc">Run Squeeze proxy in your terminal to intercept LLM API payloads:</div>
-                  <div class="code-box-container">
-                    <pre><code>npx squeeze proxy --port 8080</code></pre>
-                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                  </div>
-                </div>
-                <div class="install-step-item">
-                  <div class="step-header">2. Update Cursor Model Base URL</div>
-                  <div class="step-desc">In Cursor Settings ➔ Models ➔ OpenAI/Anthropic Base URL, set:</div>
-                  <div class="code-box-container">
-                    <pre><code>http://localhost:8080/v1</code></pre>
-                    <button class="code-copy-btn" title="Copy URL"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 5. CLI PANEL -->
-            <div class="install-panel" id="panel-cli" style="display: none;">
-              <div class="install-steps-list">
-                <div class="install-step-item">
-                  <div class="step-header">1. Install Squeeze CLI globally</div>
-                  <div class="step-desc">Install Squeeze via npm to run prompt optimization from your terminal:</div>
-                  <div class="code-box-container">
-                    <pre><code>npm install -g squeeze-ai && squeeze --version</code></pre>
-                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 6. AI AGENTS PANEL -->
-            <div class="install-panel" id="panel-agents" style="display: none;">
-              <div class="install-steps-list">
-                <div class="install-step-item">
-                  <div class="step-header">1. Install Squeeze SDK</div>
-                  <div class="step-desc">Integrate Squeeze context trimming into Node.js or Python agent pipelines:</div>
-                  <div class="code-box-container">
-                    <pre><code>npm install squeeze-ai   # Node.js / TypeScript
-pip install squeeze-ai   # Python</code></pre>
-                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 7. MCP PANEL -->
-            <div class="install-panel" id="panel-mcp" style="display: none;">
-              <div class="install-steps-list">
-                <div class="install-step-item">
-                  <div class="step-header">1. Start Squeeze Stdio Server</div>
-                  <div class="step-desc">Use the Squeeze stdio MCP server in any custom MCP client host:</div>
-                  <div class="code-box-container">
-                    <pre><code>npx squeeze mcp serve --stdio</code></pre>
-                    <button class="code-copy-btn" title="Copy command"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      <!-- Toast Popup -->
-      <div id="toastPopup" class="toast-popup">Copied to clipboard! ✓</div>
-
-      <!-- HOW IT WORKS / BENTO GRID SECTION -->
-      <section id="how-it-works">
-        <div class="wrap">
-          <div class="section-header">
-            <div class="section-tag">HOW IT WORKS</div>
-            <h2 class="section-title">Engineered to eliminate context bloat</h2>
-            <p class="section-subtitle">
-              Squeeze strips redundant tokens before they reach your AI model, saving context window memory and lowering API costs.
-            </p>
-          </div>
-
-          <div class="bento-grid">
-            <!-- Bento Card 1: Local Privacy (Col Span 2) -->
-            <div class="bento-card col-span-2">
-              <div>
-                <div class="bento-icon-box">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                  </svg>
-                </div>
-                <h3 class="bento-title">100% Client-Side Local Execution</h3>
-                <p class="bento-desc">
-                  Your code and prompts never touch third-party servers. All regex, AST tokenization, and payload trimming execute locally on your machine inside WebAssembly & local proxy loops.
-                </p>
-              </div>
-
-              <div class="bento-code-preview">
-                <span style="color: var(--fg-muted);">// Executed locally in memory (0ms network latency):</span><br>
-                <span class="diff-add">✓ Security Verified: Zero cloud data transmission</span><br>
-                <span style="color: var(--fg-muted);">✓ Compatible with SOC2 & enterprise privacy policies</span>
-              </div>
-            </div>
-
-            <!-- Bento Card 2: Smart Greeting Stripping -->
-            <div class="bento-card">
-              <div>
-                <div class="bento-icon-box">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="4 14 10 14 10 20"></polyline>
-                    <polyline points="20 10 14 10 14 4"></polyline>
-                    <line x1="14" y1="10" x2="21" y2="3"></line>
-                    <line x1="3" y1="21" x2="10" y2="14"></line>
-                  </svg>
-                </div>
-                <h3 class="bento-title">Automated Filler Stripping</h3>
-                <p class="bento-desc">
-                  Instantly removes conversational pleasantries, redundant intros ("Hey Claude!"), and verbose fluff without altering core prompt instructions.
-                </p>
-              </div>
-
-              <div class="bento-code-preview">
-                <span class="diff-del">- "Hey Claude, hope you're doing well! Could you please..."</span><br>
-                <span class="diff-add">+ "Review React dashboard component for bugs:"</span>
-              </div>
-            </div>
-
-            <!-- Bento Card 3: JSON Payload Squeezing -->
-            <div class="bento-card">
-              <div>
-                <div class="bento-icon-box">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                  </svg>
-                </div>
-                <h3 class="bento-title">JSON & Payload Trimming</h3>
-                <p class="bento-desc">
-                  Squeezes bulky API responses, database logs, and JSON context files down by 60–95% while keeping key data structures perfectly readable for LLMs.
-                </p>
-              </div>
-
-              <div class="bento-code-preview">
-                <span class="diff-add">⚡ 60-95% Token Reduction on API Payloads</span>
-              </div>
-            </div>
-
-            <!-- Bento Card 4: Code Block Deduplication (Col Span 2) -->
-            <div class="bento-card col-span-2">
-              <div>
-                <div class="bento-icon-box">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="16 18 22 12 16 6"></polyline>
-                    <polyline points="8 6 2 12 8 18"></polyline>
-                  </svg>
-                </div>
-                <h3 class="bento-title">Intelligent Code Deduplication</h3>
-                <p class="bento-desc">
-                  Stop resending thousands of lines of unchanged source code in long multi-turn chats. Squeeze detects cached code fragments and replaces duplicate blocks with lightweight reference hashes.
-                </p>
-              </div>
-
-              <div class="bento-code-preview">
-                <span style="color: var(--fg-muted);">// Multi-turn chat optimization:</span><br>
-                <span class="diff-del">- [2,400 lines of unchanged React dashboard code copy-pasted again]</span><br>
-                <span class="diff-add">+ // [Cached block ref: #dashboard_v3 - 2,400 lines unchanged]</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      <!-- FEATURE MATRIX DEEP-DIVE -->
-      <section id="features">
-        <div class="wrap">
-          <div class="section-header">
-            <div class="section-tag">FEATURES</div>
-            <h2 class="section-title">Built for every developer workflow</h2>
-            <p class="section-subtitle">
-              Whether you use Claude.ai in Chrome, Cursor IDE, or custom AI agent pipelines, Squeeze integrates seamlessly into your stack.
-            </p>
-          </div>
-
-          <div class="features-grid">
-            <!-- Feature 1 -->
-            <div class="feature-card">
-              <div class="feature-card-header">
-                <div class="feature-card-icon">
-                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <circle cx="12" cy="12" r="4"></circle>
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="feature-card-title">Chrome Extension</h3>
-                  <p class="feature-card-desc">
-                    Hooks directly into Claude.ai & ChatGPT web prompt inputs. Squeezes text on-the-fly before submission with zero friction.
-                  </p>
-                </div>
-              </div>
-              <div class="feature-badge-list">
-                <span class="feature-tag">Claude.ai</span>
-                <span class="feature-tag">ChatGPT</span>
-                <span class="feature-tag">100% Client-side</span>
-              </div>
-            </div>
-
-            <!-- Feature 2 -->
-            <div class="feature-card">
-              <div class="feature-card-header">
-                <div class="feature-card-icon">
-                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                    <line x1="8" y1="21" x2="16" y2="21"></line>
-                    <line x1="12" y1="17" x2="12" y2="21"></line>
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="feature-card-title">CLI & Local Proxy</h3>
-                  <p class="feature-card-desc">
-                    Run `squeeze proxy` on localhost:8080. Automatically compresses requests sent from Cursor, VS Code extensions, or local scripts.
-                  </p>
-                </div>
-              </div>
-              <div class="feature-badge-list">
-                <span class="feature-tag">Cursor IDE</span>
-                <span class="feature-tag">Localhost Proxy</span>
-                <span class="feature-tag">Zero Latency</span>
-              </div>
-            </div>
-
-            <!-- Feature 3 -->
-            <div class="feature-card">
-              <div class="feature-card-header">
-                <div class="feature-card-icon">
-                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="feature-card-title">MCP Server Protocol</h3>
-                  <p class="feature-card-desc">
-                    Native Model Context Protocol integration. Exposes `squeeze_trim` tool directly to Claude Desktop and VS Code AI agents.
-                  </p>
-                </div>
-              </div>
-              <div class="feature-badge-list">
-                <span class="feature-tag">MCP Protocol</span>
-                <span class="feature-tag">Claude Desktop</span>
-                <span class="feature-tag">Stdio Server</span>
-              </div>
-            </div>
-
-            <!-- Feature 4 -->
-            <div class="feature-card">
-              <div class="feature-card-header">
-                <div class="feature-card-icon">
-                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="16 18 22 12 16 6"></polyline>
-                    <polyline points="8 6 2 12 8 18"></polyline>
-                  </svg>
-                </div>
-                <div>
-                  <h3 class="feature-card-title">Node.js & Python SDK</h3>
-                  <p class="feature-card-desc">
-                    Embed `squeeze.compress(prompt)` directly inside your production AI backend pipelines, AutoGPT, or LangChain agents.
-                  </p>
-                </div>
-              </div>
-              <div class="feature-badge-list">
-                <span class="feature-tag">npm / pip</span>
-                <span class="feature-tag">TypeScript</span>
-                <span class="feature-tag">Python</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- INTERACTIVE LIVE PROMPT SQUEEZER & SAVINGS CALCULATOR -->
-      <section id="sandbox">
-        <div class="wrap">
-          <div class="section-header">
-            <div class="section-tag">LIVE DEMO</div>
-            <h2 class="section-title">Try the Squeeze Sandbox</h2>
-            <p class="section-subtitle">
-              Type or paste any prompt below to watch Squeeze strip fillers and shrink character counts in real time.
-            </p>
-          </div>
-
-          <div class="sandbox-grid">
-            <!-- Sandbox Box 1: Interactive Squeezer -->
-            <div class="sandbox-box">
-              <h3>Live Prompt Optimizer</h3>
-              <p class="sub">Type a prompt to see instant optimization:</p>
-              
-              <textarea class="sandbox-textarea" id="sandboxInput" placeholder="Type or paste your prompt here...">Hey Claude, hope you are doing well today! I have a question regarding TypeScript interfaces. Could you please explain how generics work in TypeScript with a detailed example? Thank you so much!</textarea>
-              
-              <div style="font-size: 0.8rem; font-weight: 600; color: var(--fg-bright); margin-bottom: 0.5rem;">Optimized Output:</div>
-              <div class="bento-code-preview" id="sandboxOutput" style="min-height: 80px; margin-bottom: 1rem;">
-                Explain TypeScript generic interfaces with detailed code example:
-              </div>
-
-              <div class="sandbox-metrics">
-                <div class="stat-metric-card">
-                  <div class="metric-label">Original</div>
-                  <div class="metric-val" id="rawCharCount">216 chars</div>
-                </div>
-                <div class="stat-metric-card">
-                  <div class="metric-label">Squeezed</div>
-                  <div class="metric-val highlight" id="optCharCount">62 chars</div>
-                </div>
-                <div class="stat-metric-card">
-                  <div class="metric-label">Trimmed</div>
-                  <div class="metric-val highlight" id="trimPercent">71%</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Sandbox Box 2: Savings Calculator -->
-            <div class="sandbox-box" id="calculator">
-              <h3>Token Savings Calculator</h3>
-              <p class="sub">Calculate your estimated monthly token & cash savings:</p>
-
-              <div class="calc-group">
-                <div class="calc-label-row">
-                  <span>Average Prompt Length</span>
-                  <span class="calc-val-readout" id="promptSizeVal">3,000 tokens</span>
-                </div>
-                <input type="range" class="range-slider" id="promptSize" min="500" max="15000" step="500" value="3000">
-              </div>
-
-              <div class="calc-group">
-                <div class="calc-label-row">
-                  <span>Daily Prompt Volume</span>
-                  <span class="calc-val-readout" id="promptCountVal">30 prompts</span>
-                </div>
-                <input type="range" class="range-slider" id="promptCount" min="5" max="200" step="5" value="30">
-              </div>
-
-              <div class="calc-group">
-                <div class="calc-label-row">
-                  <span>Average Context Trim</span>
-                  <span class="calc-val-readout" id="reductionRateVal">35% saved</span>
-                </div>
-                <input type="range" class="range-slider" id="reductionRate" min="10" max="80" step="5" value="35">
-              </div>
-
-              <div class="panel-stat-grid" style="margin-top: 2rem;">
-                <div class="stat-metric-card" style="padding: 1rem;">
-                  <div class="metric-label">Monthly Tokens Saved</div>
-                  <div class="metric-val highlight" id="monthlyTokensVal" style="font-size: 1.4rem;">945K</div>
-                </div>
-                <div class="stat-metric-card" style="padding: 1rem;">
-                  <div class="metric-label">Monthly Cash Saved</div>
-                  <div class="metric-val highlight" id="monthlySavingsVal" style="font-size: 1.4rem;">$2.84</div>
-                  <div style="font-size: 0.68rem; color: var(--fg-muted); margin-top: 2px;">Based on Sonnet 5 rates</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- INTERACTIVE FAQ ACCORDION -->
-      <section id="faq">
-        <div class="wrap">
-          <div class="section-header">
-            <div class="section-tag">FAQ</div>
-            <h2 class="section-title">Frequently Asked Questions</h2>
-            <p class="section-subtitle">
-              Everything you need to know about Squeeze, privacy, and browser integration.
-            </p>
-          </div>
-
-          <div class="faq-list">
-            <div class="faq-item active">
-              <button class="faq-question">
-                <span>How does Squeeze reduce tokens without losing prompt meaning?</span>
-                <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              <div class="faq-answer">
-                Squeeze combines deterministic regex rules, AST code parsers, and intelligent pleasantry stripping. It removes conversational greetings ("Hey Claude"), filler phrases ("Could you please kindly..."), redundant whitespaces, and duplicate multi-turn code imports while preserving 100% of your technical instructions.
-              </div>
-            </div>
-
-            <div class="faq-item">
-              <button class="faq-question">
-                <span>Is my prompt and code data private?</span>
-                <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              <div class="faq-answer">
-                Yes, 100%. Squeeze runs entirely locally in your browser, local proxy loop, or MCP stdio process. No prompts, code, or context logs are ever uploaded to any remote server.
-              </div>
-            </div>
-
-            <div class="faq-item">
-              <button class="faq-question">
-                <span>Does Squeeze work with Claude 3.7 Sonnet & Sonnet 5?</span>
-                <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              <div class="faq-answer">
-                Yes! Squeeze is engineered for Anthropic's Claude models (including Sonnet 3.7 & Sonnet 5), as well as Cursor IDE, ChatGPT, and custom OpenAI API endpoints.
-              </div>
-            </div>
-
-            <div class="faq-item">
-              <button class="faq-question">
-                <span>When will the Chrome Extension be available?</span>
-                <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              <div class="faq-answer">
-                The Squeeze WebExtension is launching on the Chrome Web Store shortly! Join our VIP waitlist today to receive early beta access and exclusive updates.
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- IMPACTFUL BOTTOM CTA BANNER -->
-      <section style="border-bottom: none;">
-        <div class="wrap">
-          <div class="bottom-cta-card">
-            <div class="bottom-cta-content">
-              <h2>Start squeezing prompts today.</h2>
-              <p>Join our VIP waitlist to get early access to the Squeeze Chrome Extension and Local Proxy layer.</p>
-              <button class="btn primary open-waitlist-btn" style="padding: 0.75rem 2rem; font-size: 1rem;">Join VIP Waitlist 🚀</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- FOOTER -->
-    <footer>
-      <div class="wrap">
-        <div class="footer-grid">
-          <div>
-            <a class="brand-link" href="#top" style="margin-bottom: 1rem; display: inline-flex;">
-              <div class="brand-logo-icon">
-                <img src="logo.svg" alt="Squeeze Logo" width="20" height="20" style="display: block;">
-              </div>
-              Squeeze <span class="highlight">AI</span>
-            </a>
-            <p style="font-size: 0.88rem; color: var(--fg-muted); line-height: 1.6; max-width: 20rem;">
-              The client-side context compression layer for developers on Claude, Cursor, and AI Agents.
-            </p>
-          </div>
-
-          <div>
-            <div class="footer-col-title">Product</div>
-            <ul class="footer-links">
-              <li><a href="#how-it-works">How it works</a></li>
-              <li><a href="#features">Features</a></li>
-              <li><a href="#sandbox">Sandbox</a></li>
-              <li><a href="#calculator">Savings Calculator</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <div class="footer-col-title">Resources</div>
-            <ul class="footer-links">
-              <li><a href="#faq">FAQ</a></li>
-              <li><a href="https://github.com" target="_blank">GitHub Repo</a></li>
-              <li><a href="#top">Privacy Policy</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <div class="footer-col-title">System Status</div>
-            <div class="status-pill">
-              <span class="pulse-dot"></span>
-              All Systems Operational
-            </div>
-            <p style="font-size: 0.78rem; color: var(--fg-muted); margin-top: 0.75rem;">
-              Local Proxy: v2.0.4<br>
-              Chrome Extension: Pending Store Release
-            </p>
-          </div>
-        </div>
-
-        <div class="footer-bottom">
-          <span>&copy; 2026 Squeeze AI. Open source MIT license.</span>
-          <span>Made for Claude, Cursor & AI Developers</span>
-        </div>
-      </div>
-    </footer>
-
-  </div> <!-- End Layout Container -->
-
-  <!-- VIP WAITLIST MODAL (Connected to Google Sheets API) -->
-  <div id="waitlistModal" class="modal-overlay" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <button id="closeWaitlistModal" class="modal-close-btn" aria-label="Close modal">&times;</button>
-      
-      <div id="waitlistFormContainer">
-        <div style="margin-bottom: 1.5rem;">
-          <div class="section-tag" style="margin-bottom: 0.5rem;">VIP EARLY ACCESS</div>
-          <h2 id="modalTitle" style="font-size: 1.5rem;">Join the Squeeze Waitlist</h2>
-          <p style="font-size: 0.85rem; color: var(--fg-muted); margin-top: 0.35rem;">
-            Leave your email and WhatsApp number to lock in your spot and get notified the moment Squeeze drops on the Chrome Web Store!
-          </p>
-        </div>
-
-        <iframe name="hidden_waitlist_iframe" id="hidden_waitlist_iframe" style="display:none;"></iframe>
-        <form id="waitlistForm" class="waitlist-form" action="https://script.google.com/macros/s/AKfycbygh9Fc9EhLGmV5XnpiJ6mE5DjQT0fiB0dKEwnUXJEnDiSVTn7ATlpA6NRSk6VerJwWyg/exec" method="POST" target="hidden_waitlist_iframe">
-          
-          <div class="form-group">
-            <label for="waitlistEmail">Email Address <span style="color: var(--accent-color);">*</span></label>
-            <div class="input-wrapper">
-              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
-              <input type="email" id="waitlistEmail" name="email" required placeholder="alex@company.com" autocomplete="email">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="waitlistWhatsapp">WhatsApp Number <span style="color: var(--accent-color);">*</span></label>
-            <div class="input-wrapper">
-              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-              </svg>
-              <input type="tel" id="waitlistWhatsapp" name="whatsapp" required placeholder="+1 (555) 000-0000 or +91 98765 43210" autocomplete="tel">
-            </div>
-            <span style="font-size: 0.72rem; color: var(--fg-muted); margin-top: 0.25rem; display: block;">Include country code (e.g. +1 or +91)</span>
-          </div>
-
-          <div id="waitlistError" style="display: none; color: #f87171; font-size: 0.82rem; margin-bottom: 1rem; padding: 0.5rem; background: rgba(248, 113, 113, 0.1); border-radius: 6px;"></div>
-
-          <button type="submit" id="waitlistSubmitBtn" class="btn primary" style="width: 100%; padding: 0.75rem;">
-            <span class="btn-text">Join VIP Waitlist 🚀</span>
-            <span class="btn-loader" style="display: none;">Saving...</span>
+}
+          <button class="sq21-copy-btn" onclick='sq21Copy("{\n  \"mcpServers\": {\n    \"squeeze\": {\n      \"command\": \"squeeze\",\n      \"args\": [\"mcp\"]\n    }\n  }\n}", this)'>
+            <svg viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="4" y="4" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
           </button>
-          
-          <p style="font-size: 0.74rem; color: var(--fg-muted); text-align: center; margin-top: 0.85rem;">
-            🔒 100% spam-free. Your data routes directly to your private sheet.
-          </p>
-        </form>
+        </div>
       </div>
 
-      <!-- Success State -->
-      <div id="waitlistSuccess" style="display: none; text-align: center; padding: 1.5rem 0.5rem;">
-        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
-        <h3 style="font-size: 1.35rem; margin-bottom: 0.5rem;">You're on the VIP Waitlist!</h3>
-        <p style="font-size: 0.88rem; color: var(--fg-muted); margin-bottom: 1.5rem; line-height: 1.5;">
-          Thank you for joining! We'll send your exclusive launch invitation to your Email and WhatsApp the instant Squeeze drops.
-        </p>
-        <button id="successCloseBtn" class="btn secondary">Done</button>
+      <!-- Tab 4: VS Code -->
+      <div class="sq21-tab-content" data-content="vscode" style="display:none;">
+        <div class="sq21-panel-row"><h3>Add to VS Code / Continue / Roo Code</h3></div>
+        <p class="desc">Command Palette ➔ <em>MCP: Add Server</em> ➔ paste the command below:</p>
+        <div class="sq21-code">
+          <span class="cmd">squeeze</span> mcp
+          <button class="sq21-copy-btn" onclick="sq21Copy('squeeze mcp', this)">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="4" y="4" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <p class="sq21-note">Or run <code>squeeze mcp setup</code> to auto-configure all VS Code extensions.</p>
+      </div>
+
+      <!-- Tab 5: MCP -->
+      <div class="sq21-tab-content" data-content="mcp" style="display:none;">
+        <div class="sq21-panel-row"><h3>Raw MCP Protocol / Transport</h3></div>
+        <p class="desc">Standard JSON-RPC over stdio for any custom MCP client:</p>
+        <div class="sq21-code" style="white-space:pre;">{
+  "mcpServers": {
+    "squeeze": {
+      "command": "npx",
+      "args": ["-y", "squeeze-ai", "mcp"]
+    }
+  }
+}
+          <button class="sq21-copy-btn" onclick='sq21Copy("{\n  \"mcpServers\": {\n    \"squeeze\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"squeeze-ai\", \"mcp\"]\n    }\n  }\n}", this)'>
+            <svg viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="4" y="4" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <p class="desc" style="margin-top: 14px; margin-bottom: 6px;">For background servers or remote agents, launch the MCP SSE HTTP transport:</p>
+        <div class="sq21-code">
+          <span class="cmd">npx</span> -y squeeze-ai mcp serve --port 8788
+          <button class="sq21-copy-btn" onclick="sq21Copy('npx -y squeeze-ai mcp serve --port 8788', this)">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="4" y="4" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    (function(){
+      var tabsEl = document.getElementById('sq21Tabs');
+      var pill = document.getElementById('sq21Pill');
+      var tabs = tabsEl.querySelectorAll('.sq21-tab');
+      var panel = document.getElementById('sq21Panel');
+      var badge = document.getElementById('sq21ToolBadge');
+
+      function movePillTo(tab){
+        var tabsRect = tabsEl.getBoundingClientRect();
+        var rect = tab.getBoundingClientRect();
+        var x = rect.left - tabsRect.left - 4; // account for container padding
+        pill.style.width = rect.width + 'px';
+        pill.style.transform = 'translateX(' + x + 'px)';
+      }
+
+      function swapBadgeIcon(target){
+        var current = badge.querySelector('.sq21-tool-icon:not([style*="display: none"])');
+        var next = badge.querySelector('.sq21-tool-icon[data-icon="' + target + '"]');
+        if (!next || current === next) return;
+
+        if (current) {
+          current.classList.add('sq21-leaving');
+          window.setTimeout(function(){
+            current.style.display = 'none';
+            current.classList.remove('sq21-leaving');
+            next.style.display = 'flex';
+            next.style.animation = 'none';
+            void next.offsetWidth;
+            next.style.animation = '';
+          }, 130);
+        } else {
+          next.style.display = 'flex';
+        }
+      }
+
+      // Position the pill under the initially-active tab with no animation on first paint.
+      var initial = tabsEl.querySelector('.sq21-tab.active');
+      movePillTo(initial);
+      void pill.offsetWidth; // force reflow before enabling transitions
+      pill.classList.add('sq21-pill-ready');
+      badge.querySelector('.sq21-tool-icon[data-icon="cli"]').style.display = 'flex';
+
+      tabs.forEach(function(tab){
+        tab.addEventListener('click', function(){
+          if (tab.classList.contains('active')) return;
+
+          tabs.forEach(function(t){ t.classList.remove('active'); });
+          tab.classList.add('active');
+          movePillTo(tab);
+
+          var target = tab.getAttribute('data-tab');
+          swapBadgeIcon(target);
+
+          var current = panel.querySelector('.sq21-tab-content:not([style*="display: none"])');
+          var next = panel.querySelector('.sq21-tab-content[data-content="' + target + '"]');
+
+          if (current && current !== next) {
+            current.classList.add('sq21-leaving');
+            window.setTimeout(function(){
+              current.style.display = 'none';
+              current.classList.remove('sq21-leaving');
+              next.style.display = 'block';
+              next.style.animation = 'none';
+              void next.offsetWidth;
+              next.style.animation = '';
+            }, 140);
+          } else if (next) {
+            next.style.display = 'block';
+          }
+        });
+      });
+
+      window.addEventListener('resize', function(){
+        var active = tabsEl.querySelector('.sq21-tab.active');
+        pill.classList.remove('sq21-pill-ready');
+        movePillTo(active);
+        void pill.offsetWidth;
+        pill.classList.add('sq21-pill-ready');
+      });
+    })();
+
+    function sq21Copy(text, btn){
+      navigator.clipboard.writeText(text).then(function(){
+        var original = btn.innerHTML;
+        var isPrompt = btn.classList.contains('sq21-copy-prompt');
+        btn.classList.add('sq21-copied');
+        btn.innerHTML = isPrompt
+          ? '<span class="sq21-check">✓</span><span class="sq21-label">Copied</span>'
+          : '<span class="sq21-check">✓</span>';
+        setTimeout(function(){
+          btn.innerHTML = original;
+          btn.classList.remove('sq21-copied');
+        }, 1200);
+      });
+    }
+  </script>
+
+  <!-- 5. ANIMATED STATS ROW -->
+  <section id="stats" class="section stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-box" data-animate="fade-up" data-delay="0">
+          <div class="stat-number" data-count="99" data-suffix="%">0%</div>
+          <div class="stat-label">Max Context Reduction</div>
+        </div>
+        <div class="stat-box" data-animate="fade-up" data-delay="100">
+          <div class="stat-number" data-count="4.8" data-decimal="1" data-suffix="M+">0M+</div>
+          <div class="stat-label">Tokens Squeezed</div>
+        </div>
+        <div class="stat-box" data-animate="fade-up" data-delay="200">
+          <div class="stat-number" data-count="12500" data-suffix="+">0+</div>
+          <div class="stat-label">Prompts Optimized</div>
+        </div>
+        <div class="stat-box" data-animate="fade-up" data-delay="300">
+          <div class="stat-number" data-count="100" data-suffix="%">0%</div>
+          <div class="stat-label">Local & Private</div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
+  <!-- 6. WHAT OUR CUSTOMERS SAY (Cegnify Style) -->
+  <section class="section feedback-section">
+    <div class="container">
+      <div class="align-center" style="max-width: 720px; margin: 0 auto 50px;" data-animate="fade-up">
+        <h2 class="heading-h1 blur-fade">What our customers say</h2>
+        <p class="text-large" style="margin-top: 12px; color: var(--text-muted);">Real experiences from teams who integrated Squeeze into their daily workflows.</p>
+      </div>
+
+      <div class="feedback-container" data-animate="fade-up" data-delay="100">
+        <!-- Overlapping Avatar Cards Stack -->
+        <div class="feedback-avatar-stack" id="feedbackAvatarStack">
+          <div class="feedback-avatar-card" data-index="0" title="Alex Rivera">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80" alt="Alex Rivera">
+          </div>
+          <div class="feedback-avatar-card active" data-index="1" title="Michael Reyes">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80" alt="Michael Reyes">
+          </div>
+          <div class="feedback-avatar-card" data-index="2" title="Sarah Chen">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&auto=format&fit=crop&q=80" alt="Sarah Chen">
+          </div>
+        </div>
+
+        <!-- Main Card Box -->
+        <div class="feedback-box">
+          <div class="feedback-quote" id="feedbackQuote">
+            "Our workflow finally runs smoothly. Tasks are automated, information is organized, and decisions happen faster than ever."
+          </div>
+
+          <!-- Bottom Control Bar -->
+          <div class="feedback-controls-row">
+            <button class="feedback-nav-btn" id="feedbackPrevBtn" aria-label="Previous testimonial">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+
+            <div class="feedback-author-meta">
+              <div class="feedback-author-name" id="feedbackAuthorName">Michael Reyes</div>
+              <div class="feedback-author-role" id="feedbackAuthorRole">Operations Manager</div>
+            </div>
+
+            <button class="feedback-nav-btn" id="feedbackNextBtn" aria-label="Next testimonial">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. PRICING SECTION (Currently hidden, preserved for future monetization) -->
+  <section id="pricing" class="section" style="display: none;">
+    <div class="container">
+      <div class="align-center" style="max-width: 700px; margin: 0 auto 48px;" data-animate="fade-up">
+        <h2 class="heading-h1 blur-fade">Simple, Transparent Pricing</h2>
+        <p class="text-large" style="margin-top: 12px;">Start free forever on your local machine, or unlock team fleet capabilities.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Tier 1: Free -->
+        <div class="pricing-card" data-animate="fade-up" data-delay="0">
+          <h3 class="pricing-tier-name">Free Developer</h3>
+          <p class="pricing-tier-desc">Perfect for individual developers using Claude.ai & Cursor.</p>
+          <div class="price-val">$0 <span class="price-period">/ forever</span></div>
+          <ul class="pricing-checklist">
+            <li>✓ 100% Local Prompt Compression</li>
+            <li>✓ Squeeze, Polish & Balanced Modes</li>
+            <li>✓ Local Context Vault Storage</li>
+            <li>✓ Model Context Protocol (MCP) Support</li>
+          </ul>
+          <a href="#" class="btn-secondary" style="margin-top: auto; text-align: center;">Get Started Free</a>
+        </div>
+
+        <!-- Tier 2: Pro (Highlighted) -->
+        <div class="pricing-card popular" data-animate="fade-up" data-delay="100">
+          <div class="popular-badge">Most Popular</div>
+          <h3 class="pricing-tier-name">Pro Power User</h3>
+          <p class="pricing-tier-desc">For heavy LLM power users requiring maximum context headroom.</p>
+          <div class="price-val">$9 <span class="price-period">/ month</span></div>
+          <ul class="pricing-checklist">
+            <li>✓ Everything in Free Developer</li>
+            <li>✓ PDF Squeezer & Smart Model Router</li>
+            <li>✓ Context Depth Meter & Analytics</li>
+            <li>✓ Duplicate Context Stripper</li>
+            <li>✓ Priority Local Proxy Throughput</li>
+          </ul>
+          <a href="#" class="btn-primary" style="margin-top: auto; text-align: center;">Start 14-Day Trial</a>
+        </div>
+
+        <!-- Tier 3: Team -->
+        <div class="pricing-card" data-animate="fade-up" data-delay="200">
+          <h3 class="pricing-tier-name">Team & Agent Fleet</h3>
+          <p class="pricing-tier-desc">For engineering teams and high-volume AI agent pipelines.</p>
+          <div class="price-val">$29 <span class="price-period">/ month</span></div>
+          <ul class="pricing-checklist">
+            <li>✓ Everything in Pro Power User</li>
+            <li>✓ Multi-seat Team Management</li>
+            <li>✓ High-throughput API Middleware</li>
+            <li>✓ Shared Team AST Hash Cache</li>
+            <li>✓ Enterprise Security & Dedicated Support</li>
+          </ul>
+          <a href="#" class="btn-secondary" style="margin-top: auto; text-align: center;">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAQ ACCORDION SECTION -->
+  <section id="faq" class="section faq-section">
+    <div class="container">
+      <div class="faq-header align-center" data-animate="fade-up">
+        <h2 class="faq-title blur-fade">Questions? We've<br>got answers.</h2>
+      </div>
+
+      <div class="faq-grid" data-animate="fade-up" data-delay="100">
+        <!-- Left Column -->
+        <div class="faq-column">
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Is Squeeze really 100% local and private?</span>
+              <span class="faq-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </div>
+            <div class="faq-answer">
+              <p>Yes. Squeeze runs entirely on your local computer. Your code, prompts, logs, and JSON data are processed locally and never sent to any external server or third-party cloud.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How does Squeeze help with Claude message limits?</span>
+              <span class="faq-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </div>
+            <div class="faq-answer">
+              <p>Claude calculates usage based on total tokens sent. By compressing repetitive code, JSON, and polite filler by up to 99%, Squeeze lets you send many more messages before hitting limits.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>What happens if Squeeze removes something the AI needs?</span>
+              <span class="faq-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </div>
+            <div class="faq-answer">
+              <p>Nothing is permanently lost. Squeeze stores a copy of every trimmed block in your local Context Vault. If the AI ever needs the exact original, you pull it back with a single bookmark call.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="faq-column">
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How do I set up Squeeze with Cursor or VS Code?</span>
+              <span class="faq-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </div>
+            <div class="faq-answer">
+              <p>Setup takes less than 60 seconds. Simply run <code>squeeze mcp setup</code> in your terminal or point Cursor's API base URL to <code>http://localhost:8787/v1</code>.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Does Squeeze work with ChatGPT and Gemini?</span>
+              <span class="faq-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </div>
+            <div class="faq-answer">
+              <p>Yes. Squeeze works universally across Claude.ai, ChatGPT, Google Gemini, Cursor IDE, and any custom API integration using the Model Context Protocol (MCP).</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How do I install and connect Squeeze via MCP?</span>
+              <span class="faq-chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </div>
+            <div class="faq-answer">
+              <p>Simply run <code>npx squeeze-ai mcp setup</code> in your terminal. It automatically configures your <code>claude_desktop_config.json</code> or Cursor <code>.mcp.json</code> file.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-footer-action align-center" data-animate="fade-up" data-delay="200">
+        <a href="https://wa.me/919386003737?text=Hi%20Squeeze%20AI%20Team%2C%20I%20have%20a%20question%20about%20Squeeze." target="_blank" rel="noopener noreferrer" class="faq-ask-btn text-roll">Ask The Question</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. FINAL CTA BAND -->
+  <section class="section final-cta-section">
+    <div class="container align-center">
+      <div class="final-cta-box" data-animate="fade-up">
+        <h2 class="heading-h1 blur-fade" style="color: var(--text-white);">Stop wasting context on raw logs &amp; boilerplate.</h2>
+        <p class="text-large" style="margin-top: 16px; max-width: 620px; margin-left: auto; margin-right: auto;">
+          Squeeze runs 100% locally on your machine. Get up to 99% more context headroom in less than 60 seconds.
+        </p>
+        <div style="margin-top: 32px;">
+          <a href="#install-guide" class="btn-primary text-roll" style="padding: 16px 36px; font-size: 1.05rem;">Start Squeezing Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. FOOTER (Cegnify-style) -->
+  <footer class="footer-cegnify">
+    <div class="container">
+      <!-- Main Footer Grid: 3-column -->
+      <div class="ceg-footer-grid">
+        <!-- Left: Company Links -->
+        <div class="ceg-footer-col ceg-footer-col-left">
+          <h4 class="ceg-footer-heading">Company</h4>
+          <ul class="ceg-footer-links">
+            <li><a href="#simulator" class="text-roll">Features</a></li>
+            <li><a href="#stats" class="text-roll">Impact</a></li>
+            <li><a href="#install-guide" class="text-roll">Setup Guide</a></li>
+            <li><a href="#faq" class="text-roll">FAQ</a></li>
+          </ul>
+        </div>
+
+        <!-- Center: Brand + Tagline + Social -->
+        <div class="ceg-footer-col ceg-footer-col-center">
+          <a href="#top" class="ceg-footer-brand">
+            <svg class="squeeze-logo-svg" width="34" height="34" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect class="squeeze-logo-box" width="40" height="40" rx="10" fill="#07090E" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
+              <path class="squeeze-logo-star" d="M 20 7 Q 20 20 33 20 Q 20 20 20 33 Q 20 20 7 20 Q 20 20 20 7 Z" fill="#F5C518"/>
+            </svg>
+            Squeeze<span class="ceg-brand-accent">AI</span>
+          </a>
+          <p class="ceg-footer-tagline">
+            AI-powered context compression designed to help developers<br>
+            use more, waste less
+          </p>
+          <div class="ceg-social-icons">
+            <!-- GitHub -->
+            <a href="https://github.com/aaxhu001/squeeze-ai" target="_blank" rel="noopener" class="ceg-social-btn" aria-label="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/aashuraj01" target="_blank" rel="noopener" class="ceg-social-btn" aria-label="LinkedIn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <!-- NPM -->
+            <a href="https://www.npmjs.com/package/squeeze-ai" target="_blank" rel="noopener" class="ceg-social-btn" aria-label="NPM">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 2h20v20H2z"/><path d="M12 2v20"/><path d="M2 12h10"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Resources Links -->
+        <div class="ceg-footer-col ceg-footer-col-right">
+          <h4 class="ceg-footer-heading">Resources</h4>
+          <ul class="ceg-footer-links">
+            <li><a href="#install-guide" class="text-roll">MCP Protocol</a></li>
+            <li><a href="#install-guide" class="text-roll">CLI Setup</a></li>
+            <li><a href="https://www.npmjs.com/package/squeeze-ai" target="_blank" class="text-roll">NPM Package</a></li>
+            <li><a href="#faq" class="text-roll">Documentation</a></li>
+            <li><a href="https://wa.me/919386003737?text=Hi%20Squeeze%20AI%20Team%2C%20I%20have%20a%20question%20about%20Squeeze." target="_blank" class="text-roll">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="ceg-footer-bottom">
+        <div class="ceg-footer-copyright">
+          &copy; 2026 SqueezeAI.dev All Rights Reserved | Made by <a href="https://www.linkedin.com/in/aashuraj01" target="_blank" rel="noopener">Aashu</a>
+        </div>
+        <div class="ceg-footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">T & C</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Giant Oversized Brand Text -->
+    <div class="ceg-footer-giant-brand" aria-hidden="true">
+      <span class="ceg-giant-white">Squeeze</span><span class="ceg-giant-yellow">AI</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="index.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

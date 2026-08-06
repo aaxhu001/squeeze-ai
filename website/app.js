@@ -40,7 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================
-  // 2. Subtle Background Canvas Engine
+  // 2. Rich Interactive Background Canvas Engine
+  // ==========================================
+  // ==========================================
+  // 2. Rich Interactive Kinetic Grid Canvas Engine (Brand Theme #F5C518)
   // ==========================================
   const canvas = document.getElementById('shapegrid-canvas');
   if (canvas) {
@@ -48,116 +51,253 @@ document.addEventListener('DOMContentLoaded', () => {
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
     
-    const particles = [];
-    const particleCount = 30;
-    const maxDistance = 140;
-    const mouse = { x: null, y: null, active: false };
+    // Kinetic Grid Constants
+    const CELL_SIZE = 55;
+    const INFLUENCE_RADIUS = 280;
+    const MAX_WARP = 28;
+    const DOT_SPACING = 28;
+    const LERP_SPEED = 0.08;
+    // Base grid color matches background dark theme
+    const LINE_BASE = { r: 255, g: 255, b: 255, a: 0.04 };
 
-    class MicroParticle {
-      constructor() {
-        this.reset();
-      }
+    // Squeeze Brand Golden Yellow Theme under Cursor
+    const THEME = {
+      lineActive: { r: 245, g: 197, b: 24, a: 0.95 },
+      nodeActive: { r: 245, g: 197, b: 24, a: 1.0 },
+      glow: "245,197,24",
+      ripple: "245,197,24"
+    };
 
-      reset() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.4;
-        this.vy = (Math.random() - 0.5) * 0.4;
-        this.radius = Math.random() * 1.5 + 1;
-      }
+    // Off-screen until cursor moves over page
+    const mouse = { x: -9999, y: -9999 };
+    const targetMouse = { x: -9999, y: -9999 };
+    const ripples = [];
+    let canvasVisible = true;
+    const TARGET_FPS = 30;
+    const FRAME_INTERVAL = 1000 / TARGET_FPS;
+    let lastFrameTime = 0;
 
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
+    function lerpN(a, b, t) {
+      return a + (b - a) * t;
+    }
 
-        if (this.x < 0 || this.x > width) this.vx *= -1;
-        if (this.y < 0 || this.y > height) this.vy *= -1;
+    function lerpColor(base, active, t) {
+      const r = Math.round(lerpN(base.r, active.r, t));
+      const g = Math.round(lerpN(base.g, active.g, t));
+      const b = Math.round(lerpN(base.b, active.b, t));
+      const a = lerpN(base.a, active.a, t);
+      return `rgba(${r},${g},${b},${a.toFixed(3)})`;
+    }
 
-        if (mouse.active) {
-          const dx = mouse.x - this.x;
-          const dy = mouse.y - this.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 140) {
-            const force = (140 - dist) / 140;
-            this.x += (dx / dist) * force * 0.5;
-            this.y += (dy / dist) * force * 0.5;
-          }
+    // Grid Warp Calculation
+    function getWarpedPoint(gx, gy, col, row, mouse, ripples, cols, rows) {
+      const edgeMargin = 1.5;
+      const colPin = Math.min(col / edgeMargin, (cols - 1 - col) / edgeMargin, 1);
+      const rowPin = Math.min(row / edgeMargin, (rows - 1 - row) / edgeMargin, 1);
+      const pinFactor = colPin * colPin * rowPin * rowPin;
+
+      const dx = gx - mouse.x;
+      const dy = gy - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      const proximity = Math.max(0, 1 - dist / INFLUENCE_RADIUS) * pinFactor;
+
+      let rx = 0, ry = 0;
+      for (const r of ripples) {
+        const rdx = gx - r.x;
+        const rdy = gy - r.y;
+        const rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+        const waveWidth = 55;
+        const diff = rdist - r.radius;
+        if (Math.abs(diff) < waveWidth) {
+          const strength = (1 - Math.abs(diff) / waveWidth) * r.opacity * 18 * pinFactor;
+          const angle = Math.atan2(rdy, rdx);
+          const sign = diff < 0 ? -1 : 1;
+          rx += Math.cos(angle) * strength * sign * -1;
+          ry += Math.sin(angle) * strength * sign * -1;
         }
       }
 
-      draw() {
-        const theme = htmlEl.getAttribute('data-theme');
-        const alpha = theme === 'dark' ? 0.25 : 0.18;
-        ctx.fillStyle = `rgba(181, 96, 63, ${alpha})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
+      if (dist < INFLUENCE_RADIUS && dist > 0 && pinFactor > 0) {
+        const t = dist / INFLUENCE_RADIUS;
+        const eased = t < 0.01 ? 0 : (1 - t) * (1 - t) * Math.min(1, dist / 60);
+        const warpAmt = eased * MAX_WARP * pinFactor;
+        const angle = Math.atan2(dy, dx);
+        return {
+          pt: {
+            x: gx - Math.cos(angle) * warpAmt + rx,
+            y: gy - Math.sin(angle) * warpAmt + ry
+          },
+          proximity
+        };
       }
-    }
 
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new MicroParticle());
+      return { pt: { x: gx + rx, y: gy + ry }, proximity };
     }
 
     window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-      mouse.active = true;
+      targetMouse.x = e.clientX;
+      targetMouse.y = e.clientY;
+    }, { passive: true });
+
+    window.addEventListener('click', (e) => {
+      if (ripples.length < 5) {
+        ripples.push({
+          x: e.clientX,
+          y: e.clientY,
+          radius: 0,
+          opacity: 1,
+          born: performance.now()
+        });
+      }
     });
 
-    window.addEventListener('mouseleave', () => {
-      mouse.active = false;
-    });
-
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }, 150);
     });
 
-    function renderCanvas() {
+    document.addEventListener('visibilitychange', () => {
+      canvasVisible = !document.hidden;
+      if (canvasVisible) {
+        lastFrameTime = 0;
+        requestAnimationFrame(renderCanvas);
+      }
+    });
+
+    function renderCanvas(timestamp) {
+      if (!canvasVisible) return;
+
+      // Throttle to TARGET_FPS
+      if (lastFrameTime && (timestamp - lastFrameTime) < FRAME_INTERVAL) {
+        requestAnimationFrame(renderCanvas);
+        return;
+      }
+      lastFrameTime = timestamp;
+
+      // Smooth mouse lerp
+      mouse.x = lerpN(mouse.x, targetMouse.x, LERP_SPEED);
+      mouse.y = lerpN(mouse.y, targetMouse.y, LERP_SPEED);
+
       ctx.clearRect(0, 0, width, height);
 
-      const theme = htmlEl.getAttribute('data-theme');
-      const accentRGB = '181, 96, 63';
-
-      if (mouse.active) {
-        const glowRadius = 140;
-        const glowOpacity = theme === 'dark' ? 0.025 : 0.015;
-        const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, glowRadius);
-        grad.addColorStop(0, `rgba(${accentRGB}, ${glowOpacity})`);
-        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(mouse.x, mouse.y, glowRadius, 0, Math.PI * 2);
-        ctx.fill();
+      // Background Dot Texture
+      ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
+      for (let x = DOT_SPACING / 2; x < width; x += DOT_SPACING) {
+        for (let y = DOT_SPACING / 2; y < height; y += DOT_SPACING) {
+          ctx.beginPath();
+          ctx.arc(x, y, 0.7, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
-      for (let i = 0; i < particles.length; i++) {
-        const p1 = particles[i];
-        p1.update();
-        p1.draw();
+      // Update Ripples
+      const now = performance.now();
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const r = ripples[i];
+        const age = (now - r.born) / 1000;
+        r.radius = Math.max(0, age * 400);
+        r.opacity = Math.max(0, 1 - age * 1.2);
+        if (r.opacity <= 0) ripples.splice(i, 1);
+      }
 
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+      // Grid Warping Calculation
+      const cols = Math.max(2, Math.ceil(width / CELL_SIZE)) + 1;
+      const rows = Math.max(2, Math.ceil(height / CELL_SIZE)) + 1;
+      const cellW = width / (cols - 1);
+      const cellH = height / (rows - 1);
 
-          if (dist < maxDistance) {
-            const lineOpacity = (1 - (dist / maxDistance)) * (theme === 'dark' ? 0.08 : 0.04);
-            ctx.strokeStyle = `rgba(${accentRGB}, ${lineOpacity})`;
-            ctx.lineWidth = 0.6;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
-          }
+      const pts = [];
+      const prox = [];
+
+      for (let row = 0; row < rows; row++) {
+        pts[row] = [];
+        prox[row] = [];
+        for (let col = 0; col < cols; col++) {
+          const { pt, proximity } = getWarpedPoint(
+            col * cellW,
+            row * cellH,
+            col,
+            row,
+            mouse,
+            ripples,
+            cols,
+            rows
+          );
+          pts[row][col] = pt;
+          prox[row][col] = proximity;
         }
+      }
+
+      // Draw Grid Lines
+      const drawSeg = (p1, p2, pr1, pr2) => {
+        const avg = (pr1 + pr2) / 2;
+        const t = avg * avg * (3 - 2 * avg);
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = lerpColor(LINE_BASE, THEME.lineActive, t);
+        ctx.lineWidth = lerpN(0.8, 1.5, t);
+        ctx.stroke();
+      };
+
+      ctx.lineCap = "butt";
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols - 1; col++) {
+          drawSeg(pts[row][col], pts[row][col + 1], prox[row][col], prox[row][col + 1]);
+        }
+      }
+
+      for (let col = 0; col < cols; col++) {
+        for (let row = 0; row < rows - 1; row++) {
+          drawSeg(pts[row][col], pts[row + 1][col], prox[row][col], prox[row + 1][col]);
+        }
+      }
+
+      // Draw Intersection Nodes & Glow
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const p = pts[row][col];
+          const pr = prox[row][col];
+          const t = pr * pr * (3 - 2 * pr);
+          const r = lerpN(1.8, 3.2, t);
+
+          if (t > 0.3) {
+            const glowR = r + lerpN(0, 6, (t - 0.3) / 0.7);
+            const grd = ctx.createRadialGradient(p.x, p.y, r * 0.5, p.x, p.y, glowR);
+            grd.addColorStop(0, `rgba(${THEME.glow},${(t * 0.3).toFixed(3)})`);
+            grd.addColorStop(1, `rgba(${THEME.glow},0)`);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
+            ctx.fillStyle = grd;
+            ctx.fill();
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+          ctx.fillStyle = lerpColor({ r: 255, g: 255, b: 255, a: 0.05 }, THEME.nodeActive, t);
+          ctx.fill();
+        }
+      }
+
+      // Draw Ripples
+      for (const r of ripples) {
+        const safeRadius = Math.max(0, r.radius);
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, safeRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${THEME.ripple},${(r.opacity * 0.28).toFixed(3)})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
       }
 
       requestAnimationFrame(renderCanvas);
     }
-    renderCanvas();
+    requestAnimationFrame(renderCanvas);
   }
 
   // ==========================================
@@ -166,27 +306,43 @@ document.addEventListener('DOMContentLoaded', () => {
   const navLinks = document.querySelectorAll('.nav-link');
   const sections = document.querySelectorAll('section[id]');
 
+  let cachedSectionPositions = [];
+  function updateSectionPositions() {
+    cachedSectionPositions = Array.from(sections).map(section => ({
+      id: section.getAttribute('id'),
+      top: section.offsetTop - 120,
+      height: section.offsetHeight
+    }));
+  }
+  updateSectionPositions();
+  window.addEventListener('resize', updateSectionPositions, { passive: true });
+
+  let scrollTicking = false;
   window.addEventListener('scroll', () => {
-    let current = '';
-    const scrollY = window.pageYOffset;
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => {
+      let current = '';
+      const scrollY = window.pageYOffset;
 
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 120;
-      const sectionHeight = section.offsetHeight;
-      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-        current = section.getAttribute('id');
+      for (let i = 0; i < cachedSectionPositions.length; i++) {
+        const s = cachedSectionPositions[i];
+        if (scrollY >= s.top && scrollY < s.top + s.height) {
+          current = s.id;
+        }
       }
-    });
 
-    navLinks.forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === `#${current}`) {
-        link.classList.add('active');
-      } else if (!current && link.getAttribute('href') === '#top') {
-        link.classList.add('active');
-      }
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        } else if (!current && link.getAttribute('href') === '#top') {
+          link.classList.add('active');
+        }
+      });
+      scrollTicking = false;
     });
-  });
+  }, { passive: true });
 
   // ==========================================
   // 4. Hero Showcase Claude Simulator Mode Selector
@@ -648,6 +804,78 @@ When asked to "Squeeze this prompt" or operate in "Squeeze Mode":
           item.style.display = 'none';
         }
       });
+    });
+  }
+
+  // ==========================================
+  // 11. Quickstart Installation Widget
+  // ==========================================
+  const qsModeBtns = document.querySelectorAll('.qs-mode-btn');
+  const qsPkgBtns = document.querySelectorAll('.qs-pkg-btn');
+  const qsCommandCode = document.getElementById('qsCommandCode');
+  const qsCopyBtn = document.getElementById('qsCopyBtn');
+
+  let activeQsMode = 'terminal';
+  let activeQsPkg = 'npm';
+
+  const qsCommandMatrix = {
+    terminal: {
+      npm: 'npm install -g squeeze-ai',
+      yarn: 'yarn global add squeeze-ai',
+      pnpm: 'pnpm add -g squeeze-ai',
+      bun: 'bun add -g squeeze-ai'
+    },
+    agent: {
+      npm: 'squeeze mcp setup',
+      yarn: 'squeeze mcp setup',
+      pnpm: 'squeeze mcp setup',
+      bun: 'squeeze mcp setup'
+    }
+  };
+
+  function updateQsCommand() {
+    if (qsCommandCode && qsCommandMatrix[activeQsMode] && qsCommandMatrix[activeQsMode][activeQsPkg]) {
+      qsCommandCode.textContent = qsCommandMatrix[activeQsMode][activeQsPkg];
+    }
+  }
+
+  qsModeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      qsModeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeQsMode = btn.getAttribute('data-mode') || 'terminal';
+      updateQsCommand();
+    });
+  });
+
+  qsPkgBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      qsPkgBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeQsPkg = btn.getAttribute('data-pkg') || 'npm';
+      updateQsCommand();
+    });
+  });
+
+  if (qsCopyBtn && qsCommandCode) {
+    qsCopyBtn.addEventListener('click', () => {
+      const textToCopy = qsCommandCode.textContent.trim();
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const span = qsCopyBtn.querySelector('span');
+        if (span) {
+          const orig = span.textContent;
+          span.textContent = 'COPIED! ✓';
+          qsCopyBtn.style.background = '#10B981';
+          qsCopyBtn.style.borderColor = '#10B981';
+          qsCopyBtn.style.color = '#FFFFFF';
+          setTimeout(() => {
+            span.textContent = orig;
+            qsCopyBtn.style.background = 'rgba(255, 255, 255, 0.08)';
+            qsCopyBtn.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+            qsCopyBtn.style.color = 'var(--text-white)';
+          }, 2000);
+        }
+      }).catch(err => console.error('Copy failed:', err));
     });
   }
 });

@@ -1,0 +1,10 @@
+{
+  "9d3558f9c10cc75e": {
+    "fixCode": "// Iteration 2: Fixed implementation\nfunction fib(n) {\n  if (n <= 0) return 0;\n  if (n === 1) return 1;\n  return fib(n - 1) + fib(n - 2);\n}\nconsole.log(\"Fib(10):\", fib(10));",
+    "prompt": "Calculate Fibonacci number safely.",
+    "timestamp": "2026-08-04T14:20:18.982Z",
+    "hitCount": 1,
+    "rawTokensSaved": 228,
+    "lastHitTimestamp": "2026-08-04T14:20:19.563Z"
+  }
+}

@@ -5,7 +5,8 @@
   "main": "index.js",
   "types": "index.d.ts",
   "bin": {
-    "squeeze": "./bin/squeeze.js"
+    "squeeze": "./bin/squeeze.js",
+    "squeeze-ai": "./bin/squeeze.js"
   },
   "scripts": {
     "test": "node test_squeeze_upgrade.js",
@@ -20,7 +21,7 @@
     "openai",
     "mcp",
     "proxy",
-    "headroom",
+    "squeeze",
     "ai-agents",
     "cursor",
     "aider"

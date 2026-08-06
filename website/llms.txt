@@ -1,0 +1,34 @@
+# Squeeze AI — Enterprise Local Context Compression Layer
+
+> Squeeze AI compresses raw JSON logs, source code ASTs, and developer prompts 100% locally on your computer before sending to LLMs (Claude, ChatGPT, Cursor, Gemini), unlocking up to 99% context headroom.
+
+## Core Features
+- **100% Local Privacy**: Runs entirely on your device. Zero data leaves your computer.
+- **Model Context Protocol (MCP)**: Native stdio & HTTP/SSE MCP server exposing `squeeze_compress`, `squeeze_retrieve`, `squeeze_stats`, `squeeze_doctor`.
+- **Zero-Friction Auto Setup**: One command auto-configures Claude Desktop, Claude Code, Cursor, and Windsurf (`npx -y squeeze-ai mcp setup`).
+- **AST Code & JSON Compression**: Shrinks repeated JSON keys and boilerplate code by 60–95%.
+
+## Quickstart & Installation
+```bash
+# Global CLI Installation
+npm install -g squeeze-ai
+
+# Auto-Configure MCP Server for Claude Code, Claude Desktop, Cursor & Windsurf
+npx -y squeeze-ai mcp setup
+
+# Start Local Proxy Server
+squeeze deploy
+
+# Run Stdio MCP Server
+squeeze mcp
+```
+
+## Available MCP Tools
+- `squeeze_compress`: Compress large JSON logs, source code, API responses, or text before sending to LLM context.
+- `squeeze_retrieve`: Retrieve original uncompressed context by reference ID (`sq_ref_...`) from local CCR memory.
+- `squeeze_stats`: Get real-time token savings metrics and CCR cache statistics.
+- `squeeze_doctor`: Perform a health diagnostic check on the local compression pipeline.
+
+## Official Links
+- Website: https://squeeze-ai.surge.sh/
+- Repository: https://github.com/aaxhu001/squeeze-ai

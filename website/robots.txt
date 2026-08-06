@@ -1,0 +1,47 @@
+# Allow all Web Crawlers, Search Engines, and AI/LLM Bots
+User-agent: *
+Allow: /
+
+# Explicitly allow Anthropic / Claude User-initiated & Crawler Bots
+User-agent: Claude-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Anthropic-ai
+Allow: /
+
+User-agent: claude-web
+Allow: /
+
+# Explicitly allow OpenAI / ChatGPT bots
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+# Explicitly allow Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Explicitly allow Google AI & Gemini
+User-agent: Google-Extended
+Allow: /
+
+# Explicitly allow Common Crawl & Other AI Crawlers
+User-agent: CCBot
+Allow: /
+
+User-agent: ByteDanceBot
+Allow: /
+
+# Sitemap & LLM Markdown File
+Sitemap: https://squeeze-ai.surge.sh/sitemap.xml

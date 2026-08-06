@@ -8,9 +8,18 @@ const http = require('http');
 const https = require('https');
 const url = require('url');
 
-const ContentRouter = require('./Squeeze_Internal_Pro/modules/router.js');
-const { globalCCR } = require('./Squeeze_Internal_Pro/modules/ccr-store.js');
-const OutputShaper = require('./Squeeze_Internal_Pro/modules/output-shaper.js');
+let ContentRouter, globalCCR, OutputShaper;
+try {
+  ContentRouter = require('./SQUEEZE main/modules/router.js');
+  globalCCR = require('./SQUEEZE main/modules/ccr-store.js').globalCCR;
+  OutputShaper = require('./SQUEEZE main/modules/output-shaper.js');
+} catch (e) {
+  ContentRouter = require('./Squeeze_Internal_Pro/modules/router.js');
+  globalCCR = require('./Squeeze_Internal_Pro/modules/ccr-store.js').globalCCR;
+  OutputShaper = require('./Squeeze_Internal_Pro/modules/output-shaper.js');
+}
+
+const SqueezeMCPServer = require('./mcp-server.js');
 
 class SqueezeProxyServer {
   constructor(options = {}) {
@@ -24,12 +33,21 @@ class SqueezeProxyServer {
       startTime: Date.now()
     };
     this.server = null;
+    this.mcpServer = new SqueezeMCPServer();
   }
 
   start() {
     this.server = http.createServer((req, res) => this._handleRequest(req, res));
+    this.server.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.log(`\n✅ [SQUEEZE Proxy] Already running on http://localhost:${this.port}`);
+      } else {
+        console.error('[SQUEEZE Proxy Error]:', err);
+      }
+    });
     this.server.listen(this.port, () => {
       console.log(`\n[SQUEEZE Proxy] Running on http://localhost:${this.port}`);
+      console.log(`[SQUEEZE MCP] SSE transport active on http://localhost:${this.port}/mcp/sse`);
       console.log(`[SQUEEZE Proxy] Intercepting context & optimizing tokens in real-time.\n`);
     });
   }
@@ -54,6 +72,18 @@ class SqueezeProxyServer {
     }
 
     const parsedUrl = url.parse(req.url, true);
+    const p = (parsedUrl.pathname || '').toLowerCase();
+
+    // MCP SSE endpoints
+    if (p === '/mcp/sse' || p === '/mcp' || p === '/mcp/' || p === '/sse' || p === '/') {
+      this.mcpServer.handleSSEConnect(req, res, '/mcp/messages');
+      return;
+    }
+
+    if (p === '/mcp/messages' || p === '/messages' || p === '/mcp/messages/') {
+      this.mcpServer.handlePostMessage(req, res, parsedUrl);
+      return;
+    }
 
     // Endpoint: Health check
     if (parsedUrl.pathname === '/health' || parsedUrl.pathname === '/doctor') {
@@ -62,6 +92,7 @@ class SqueezeProxyServer {
         status: 'ok',
         version: '1.0.0-pro',
         proxy: true,
+        mcp: true,
         stats: this.getStats()
       }));
       return;

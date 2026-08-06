@@ -2,7 +2,7 @@
 
 /**
  * SQUEEZE CLI Command Executable
- * Matches Headroom CLI capabilities (deploy, wrap, unwrap, proxy, doctor, stats, mcp, dashboard).
+ * Provides SQUEEZE CLI capabilities (deploy, wrap, unwrap, proxy, doctor, stats, mcp, dashboard).
  */
 
 const { spawn, execSync } = require('child_process');
@@ -121,9 +121,19 @@ switch (command) {
   }
 
   case 'mcp': {
+    const subCmd = args[1];
     const SqueezeMCPServer = require('../mcp-server.js');
     const mcp = new SqueezeMCPServer();
-    mcp.start();
+
+    if (subCmd === 'setup' || subCmd === 'install') {
+      setupMCP();
+    } else if (subCmd === 'serve') {
+      const portIdx = args.indexOf('--port');
+      const port = portIdx !== -1 ? parseInt(args[portIdx + 1], 10) : (process.env.PORT || 8788);
+      mcp.startSSEServer(port);
+    } else {
+      mcp.startStdio();
+    }
     break;
   }
 
@@ -136,6 +146,7 @@ switch (command) {
 Install & Quick Start:
   npm install -g squeeze-ai
   squeeze deploy
+  squeeze mcp setup
 
 Usage Modes:
   squeeze deploy                  Turnkey setup & proxy launch
@@ -144,7 +155,97 @@ Usage Modes:
   squeeze proxy [--port 8787]     Start local proxy server
   squeeze doctor                  Check health of proxy & compression pipeline
   squeeze stats                   Display live token savings dashboard
-  squeeze mcp                     Run MCP stdio server
+  squeeze mcp                     Run MCP stdio server (for Claude Code, Cursor, etc.)
+  squeeze mcp serve [--port 8788] Run MCP SSE HTTP server
+  squeeze mcp setup               Auto-configure MCP for Claude Code, Cursor & Claude Desktop
     `);
   }
 }
+
+function setupMCP() {
+  console.log('\n=====================================================');
+  console.log('   SQUEEZE MCP - Zero-Friction Setup for AI Tools    ');
+  console.log('=====================================================\n');
+
+  const rootDir = path.resolve(__dirname, '..');
+  const mcpScriptPath = path.join(rootDir, 'mcp-server.js');
+  const cwd = process.cwd();
+
+  const mcpConfig = {
+    mcpServers: {
+      squeeze: {
+        command: 'node',
+        args: [mcpScriptPath]
+      }
+    }
+  };
+
+  // 1. Local Workspace MCP Configs
+  const projectMcpFile = path.join(cwd, '.mcp.json');
+  fs.writeFileSync(projectMcpFile, JSON.stringify(mcpConfig, null, 2));
+  console.log(`✅ Created workspace MCP configuration: ${projectMcpFile}`);
+
+  const claudeDir = path.join(cwd, '.claude');
+  if (!fs.existsSync(claudeDir)) {
+    try { fs.mkdirSync(claudeDir, { recursive: true }); } catch (e) {}
+  }
+  const claudeMcpFile = path.join(claudeDir, 'mcp.json');
+  fs.writeFileSync(claudeMcpFile, JSON.stringify(mcpConfig, null, 2));
+  console.log(`✅ Created Claude Code MCP configuration: ${claudeMcpFile}`);
+
+  // 2. Claude Desktop Config
+  let claudeDesktopPath = null;
+  if (process.platform === 'win32') {
+    const appData = process.env.APPDATA || path.join(process.env.USERPROFILE || '', 'AppData', 'Roaming');
+    claudeDesktopPath = path.join(appData, 'Claude', 'claude_desktop_config.json');
+  } else if (process.platform === 'darwin') {
+    claudeDesktopPath = path.join(process.env.HOME || '', 'Library', 'Application Support', 'Claude', 'claude_desktop_config.json');
+  } else if (process.platform === 'linux') {
+    claudeDesktopPath = path.join(process.env.HOME || '', '.config', 'Claude', 'claude_desktop_config.json');
+  }
+
+  if (claudeDesktopPath) {
+    try {
+      const desktopDir = path.dirname(claudeDesktopPath);
+      if (!fs.existsSync(desktopDir)) {
+        fs.mkdirSync(desktopDir, { recursive: true });
+      }
+
+      let desktopConfig = { mcpServers: {} };
+      if (fs.existsSync(claudeDesktopPath)) {
+        try {
+          desktopConfig = JSON.parse(fs.readFileSync(claudeDesktopPath, 'utf8'));
+          if (!desktopConfig.mcpServers) desktopConfig.mcpServers = {};
+        } catch (e) {}
+      }
+
+      desktopConfig.mcpServers.squeeze = {
+        command: 'node',
+        args: [mcpScriptPath]
+      };
+
+      fs.writeFileSync(claudeDesktopPath, JSON.stringify(desktopConfig, null, 2));
+      console.log(`✅ Registered SQUEEZE with Claude Desktop: ${claudeDesktopPath}`);
+    } catch (err) {
+      console.log(`⚠️ Could not update Claude Desktop config: ${err.message}`);
+    }
+  }
+
+  // 3. Register via Claude CLI if available
+  try {
+    execSync(`claude mcp add squeeze node "${mcpScriptPath}"`, { stdio: 'ignore' });
+    console.log('✅ Registered SQUEEZE MCP server directly via `claude mcp add`');
+  } catch (e) {
+    // Silent catch if claude CLI not installed
+  }
+
+  console.log('\n=====================================================');
+  console.log('🎉 SQUEEZE MCP Server successfully configured!');
+  console.log('Available MCP Tools for AI Assistants:');
+  console.log(' - squeeze_compress : Compress context, source code, and JSON logs');
+  console.log(' - squeeze_retrieve : Fetch original uncompressed text by CCR ref ID');
+  console.log(' - squeeze_stats    : Get real-time token savings and cost stats');
+  console.log(' - squeeze_doctor   : Verify health of context compression layer');
+  console.log('=====================================================\n');
+}
+

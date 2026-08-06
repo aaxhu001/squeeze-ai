@@ -40,9 +40,9 @@ def main():
     for size in sizes:
         # Write to root icons
         render_svg_to_png(svg_file, f"icons/icon{size}.png", size)
-        # Write to version2 icons
-        os.makedirs("version2/icons", exist_ok=True)
-        render_svg_to_png(svg_file, f"version2/icons/icon{size}.png", size)
+        # Write to SQUEEZE main icons
+        os.makedirs("SQUEEZE main/icons", exist_ok=True)
+        render_svg_to_png(svg_file, f"SQUEEZE main/icons/icon{size}.png", size)
 
 if __name__ == "__main__":
     main()

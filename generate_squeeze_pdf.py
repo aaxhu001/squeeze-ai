@@ -1,7 +1,8 @@
 """
-SQUEEZE AI - PDF Guide & Benchmark Report Generator
-Generates a comprehensive, publication-quality, non-technical PDF guide explaining
-all SQUEEZE features, analogies, upgrades, real test results, and step-by-step usage.
+SQUEEZE AI - PDF Guide & Benchmark Report Generator (Master Enterprise Edition)
+Generates a comprehensive, publication-quality PDF guide explaining
+all SQUEEZE features, user benefits, analogies, Phases 1-6 upgrades,
+live test benchmark results, and step-by-step usage.
 """
 
 import sys
@@ -10,10 +11,9 @@ import time
 
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
-from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable, ListFlowable, ListItem
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
 )
 from reportlab.pdfgen import canvas
 
@@ -41,16 +41,18 @@ class NumberedCanvas(canvas.Canvas):
             return
 
         self.saveState()
-        self.setFont("Helvetica", 8)
-        self.setFillColor(colors.HexColor("#7e776e"))
+        self.setFont("Helvetica-Bold", 8)
+        self.setFillColor(colors.HexColor("#0891b2")) # Cyan header text
 
         # Running Header
-        self.drawString(54, 750, "SQUEEZE AI — The Enterprise Context Compression Layer")
-        self.setStrokeColor(colors.HexColor("#e7e3dc"))
+        self.drawString(54, 750, "SQUEEZE AI v1.0.0-pro — Enterprise Context Compression & Self-Healing Platform")
+        self.setStrokeColor(colors.HexColor("#cbd5e1"))
         self.setLineWidth(0.5)
         self.line(54, 742, 558, 742)
 
         # Running Footer
+        self.setFont("Helvetica", 8)
+        self.setFillColor(colors.HexColor("#64748b"))
         page_text = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(558, 36, page_text)
         self.drawString(54, 36, "Confidential & Proprietary — SQUEEZE AI Documentation")
@@ -73,22 +75,21 @@ def create_pdf(filename="SQUEEZE_AI_Complete_Guide.pdf"):
     styles = getSampleStyleSheet()
 
     # Custom Color Palette
-    PRIMARY = colors.HexColor("#b5603f")     # Squeeze Terracotta
-    PRIMARY_DARK = colors.HexColor("#171512")# Deep Charcoal
-    ACCENT_LIGHT = colors.HexColor("#fbf9f6")# Warm Light Cream
-    SURFACE_BG = colors.HexColor("#f7f4ef")  # Warm Surface Card
-    TEXT_DARK = colors.HexColor("#171512")   # Dark Text
-    TEXT_MUTED = colors.HexColor("#64748b")  # Muted Slate
-    BORDER_COLOR = colors.HexColor("#e2e8f0")# Light Border
-    GREEN_SUCCESS = colors.HexColor("#16a34a")# Green Success Badge
+    PRIMARY = colors.HexColor("#0891b2")       # Cyan Primary
+    PRIMARY_DARK = colors.HexColor("#0f172a")  # Deep Charcoal / Slate 900
+    ACCENT_PURPLE = colors.HexColor("#7c3aed")# Purple Accent
+    SURFACE_BG = colors.HexColor("#f8fafc")    # Light Surface Slate 50
+    TEXT_DARK = colors.HexColor("#1e293b")     # Dark Slate Text
+    BORDER_COLOR = colors.HexColor("#e2e8f0")  # Border Color
+    SUCCESS_GREEN = colors.HexColor("#15803d") # Green Success Badge
 
     # Custom Typography Styles
     style_cover_title = ParagraphStyle(
         'CoverTitle',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=28,
-        leading=34,
+        fontSize=26,
+        leading=32,
         textColor=PRIMARY_DARK,
         spaceAfter=12
     )
@@ -97,8 +98,8 @@ def create_pdf(filename="SQUEEZE_AI_Complete_Guide.pdf"):
         'CoverSubtitle',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=14,
-        leading=20,
+        fontSize=13,
+        leading=19,
         textColor=PRIMARY,
         spaceAfter=24
     )
@@ -107,8 +108,8 @@ def create_pdf(filename="SQUEEZE_AI_Complete_Guide.pdf"):
         'Heading1_Custom',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=18,
-        leading=22,
+        fontSize=17,
+        leading=21,
         textColor=PRIMARY_DARK,
         spaceBefore=18,
         spaceAfter=10,
@@ -119,8 +120,8 @@ def create_pdf(filename="SQUEEZE_AI_Complete_Guide.pdf"):
         'Heading2_Custom',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=13,
-        leading=17,
+        fontSize=12,
+        leading=16,
         textColor=PRIMARY,
         spaceBefore=14,
         spaceAfter=6,
@@ -131,8 +132,8 @@ def create_pdf(filename="SQUEEZE_AI_Complete_Guide.pdf"):
         'Body_Custom',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=10,
-        leading=15,
+        fontSize=9.5,
+        leading=14.5,
         textColor=TEXT_DARK,
         spaceAfter=8
     )
@@ -141,19 +142,19 @@ def create_pdf(filename="SQUEEZE_AI_Complete_Guide.pdf"):
         'Analogy_Box',
         parent=styles['Normal'],
         fontName='Helvetica-Oblique',
-        fontSize=9.5,
-        leading=14.5,
+        fontSize=9,
+        leading=14,
         textColor=PRIMARY_DARK,
-        spaceBefore=6,
-        spaceAfter=6
+        spaceBefore=4,
+        spaceAfter=4
     )
 
     style_code = ParagraphStyle(
         'Code_Block',
         parent=styles['Normal'],
         fontName='Courier',
-        fontSize=8.5,
-        leading=12,
+        fontSize=8,
+        leading=11.5,
         textColor=colors.HexColor("#0f172a"),
         spaceBefore=4,
         spaceAfter=4
@@ -164,303 +165,259 @@ def create_pdf(filename="SQUEEZE_AI_Complete_Guide.pdf"):
     # =========================================================================
     # COVER PAGE
     # =========================================================================
-    story.append(Spacer(1, 40))
+    story.append(Spacer(1, 20))
     
     # SQUEEZE Logo Badge Header
     cover_badge_table = Table(
-        [[Paragraph("<b>SQUEEZE AI v1.0 ENTERPRISE DOCUMENTATION</b>", ParagraphStyle('Badge', fontName='Helvetica-Bold', fontSize=9, textColor=PRIMARY))]],
+        [[Paragraph("<b>⚡ SQUEEZE AI v1.0.0-PRO ENTERPRISE PLATFORM GUIDE</b>", ParagraphStyle('Badge', fontName='Helvetica-Bold', fontSize=9, textColor=PRIMARY))]],
         colWidths=[504]
     )
     cover_badge_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#fbebe4")),
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#ecfeff")),
+        ('BOX', (0,0), (-1,-1), 1, colors.HexColor("#a5f3fc")),
         ('PADDING', (0,0), (-1,-1), 8),
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
     ]))
     story.append(cover_badge_table)
-    story.append(Spacer(1, 25))
+    story.append(Spacer(1, 20))
 
-    story.append(Paragraph("SQUEEZE AI: The Complete Non-Technical Guide &amp; Benchmark Report", style_cover_title))
-    story.append(Paragraph("The Simple, Plain-English Guide to AI Context Compression, Token Savings, and 360° Deployment", style_cover_subtitle))
+    story.append(Paragraph("SQUEEZE AI: Platform Capabilities, User Benefits &amp; Technical Architecture", style_cover_title))
+    story.append(Paragraph("A Complete Guide to Enterprise Context Compression, Zero-Token Self-Healing Memory, and Real-Time Analytics", style_cover_subtitle))
     
-    story.append(HRFlowable(width="100%", thickness=2, color=PRIMARY, spaceAfter=20, spaceBefore=10))
+    story.append(HRFlowable(width="100%", thickness=2, color=PRIMARY, spaceAfter=16, spaceBefore=8))
 
     # Cover Summary Box
     summary_text = """
-    <b>Welcome!</b> This guide is written specifically for non-technical readers, executives, product managers, and users who want to understand exactly what SQUEEZE AI does without needing any programming knowledge.<br/><br/>
-    Inside this document, you will find simple analogies, live benchmark results, step-by-step installation instructions, and an exhaustive breakdown of how SQUEEZE saves <b>60–95% of AI token costs</b> automatically.
+    <b>Executive Summary:</b><br/>
+    SQUEEZE AI is an enterprise developer experience platform and context compression layer built for AI agents, LLM toolchains, and coding proxies (Claude Code, Cursor, Aider, ChatGPT, Gemini).<br/><br/>
+    It reduces raw prompt overhead by <b>60% to 95%</b>, intercepts duplicate software errors with <b>Zero-Token Local Memory ("Squeeze Memory")</b>, streams real-time diagnostic telemetry, and provides a local web analytics dashboard on <code>http://localhost:3000</code>.
     """
     summary_table = Table([[Paragraph(summary_text, style_body)]], colWidths=[504])
     summary_table.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), SURFACE_BG),
         ('BOX', (0,0), (-1,-1), 1, BORDER_COLOR),
-        ('PADDING', (0,0), (-1,-1), 14),
+        ('PADDING', (0,0), (-1,-1), 12),
     ]))
     story.append(summary_table)
 
-    story.append(Spacer(1, 40))
+    story.append(Spacer(1, 25))
+
+    # Key Value Propositions Grid Table
+    props_data = [
+        [Paragraph("<b>🚀 60% – 95% Token Savings</b>", style_body), Paragraph("Drastically cuts API token consumption on JSON logs, stack traces, and code payloads.", style_body)],
+        [Paragraph("<b>⚡ Zero-Token Local Fix Memory</b>", style_body), Paragraph("Instant local repair on duplicate errors with 0 LLM token cost and 0 ms API latency.", style_body)],
+        [Paragraph("<b>📊 Live Analytics Dashboard</b>", style_body), Paragraph("Real-time web dashboard on port 3000 with Chart.js analytics & USD/INR savings.", style_body)],
+        [Paragraph("<b>🛡️ Reversible CCR Memory Vault</b>", style_body), Paragraph("100% loss-free original context retrieval via lightweight coat-check reference keys.", style_body)]
+    ]
+    props_table = Table(props_data, colWidths=[170, 334])
+    props_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#f1f5f9")),
+        ('GRID', (0,0), (-1,-1), 0.5, BORDER_COLOR),
+        ('PADDING', (0,0), (-1,-1), 8),
+    ]))
+    story.append(props_table)
+
+    story.append(Spacer(1, 25))
 
     # Metadata Table
     meta_data = [
-        [Paragraph("<b>Document Version:</b> 1.0 Enterprise", style_body), Paragraph("<b>Target Audience:</b> Non-Technical &amp; Technical Readers", style_body)],
-        [Paragraph("<b>Core Feature Parity:</b> Headroom-Level Compression", style_body), Paragraph("<b>Supported AI Models:</b> Claude, OpenAI, Cursor, Gemini", style_body)],
-        [Paragraph("<b>Published Date:</b> July 2026", style_body), Paragraph("<b>Author:</b> SQUEEZE Engineering Team", style_body)]
+        [Paragraph("<b>Platform Version:</b> v1.0.0-pro Master Package", style_body), Paragraph("<b>Supported AI Agents:</b> Claude Code, Cursor, Aider, OpenAI, Gemini", style_body)],
+        [Paragraph("<b>Completed Phases:</b> Phase 1 through Phase 6", style_body), Paragraph("<b>Analytics Dashboard:</b> http://localhost:3000", style_body)],
+        [Paragraph("<b>Generated Date:</b> August 2026", style_body), Paragraph("<b>Author:</b> SQUEEZE AI Engineering Team", style_body)]
     ]
     meta_table = Table(meta_data, colWidths=[252, 252])
     meta_table.setStyle(TableStyle([
         ('LINEBELOW', (0,0), (-1,-1), 0.5, BORDER_COLOR),
-        ('PADDING', (0,0), (-1,-1), 8),
+        ('PADDING', (0,0), (-1,-1), 6),
     ]))
     story.append(meta_table)
 
     story.append(PageBreak())
 
     # =========================================================================
-    # CHAPTER 1: WHAT IS SQUEEZE AI? (THE SIMPLE EXPLANATION)
+    # CHAPTER 1: WHAT CAN SQUEEZE DO & USER BENEFITS
     # =========================================================================
-    story.append(Paragraph("Chapter 1: What is SQUEEZE AI? (The Simple Explanation)", style_h1))
+    story.append(Paragraph("Chapter 1: What SQUEEZE Does &amp; Core User Benefits", style_h1))
     story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=12))
 
-    story.append(Paragraph("To understand SQUEEZE AI, let's start with a simple everyday real-life story.", style_body))
+    story.append(Paragraph("SQUEEZE AI acts as an intelligent intermediary context compression layer sitting between developers and LLM providers. Here is a breakdown of how it works and the primary benefits it provides:", style_body))
 
-    # Analogy Box 1: The Luggage Compactor
+    # Analogy Box: The Vacuum-Sealer Analogy
     analogy_1 = """
-    💡 <b>THE SMART LUGGAGE COMPACTOR ANALOGY:</b><br/>
-    Imagine you are packing a suitcase for a long flight. If you toss in big, fluffy winter jackets, heavy blankets, and un-folded shirts without squeezing out the trapped air, your suitcase fills up instantly. The airline charges you massive extra baggage fees, and your suitcase is too heavy to move fast.<br/><br/>
-    <b>SQUEEZE AI</b> works like a <b>vacuum-sealer bag for your words</b> when talking to AI models (like Claude, ChatGPT, or Gemini). It removes all the empty air, polite fluff, repetitive file copies, and unneeded formatting — squeezing your information down so you fit 5 times more knowledge into the AI's memory without losing a single item!
+    💡 <b>THE VACUUM-SEALER MEMORY ANALOGY:</b><br/>
+    Imagine packing a suitcase for a flight. If you pack bulky coats without removing trapped air, the bag fills up instantly and costs extra luggage fees. SQUEEZE acts like a vacuum-sealer bag for AI prompts: it strips away repetitive noise, formats data into structural tables, and compresses code while keeping 100% of the meaning intact!
     """
     box_1 = Table([[Paragraph(analogy_1, style_analogy)]], colWidths=[504])
     box_1.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#fef3c7")),
         ('BOX', (0,0), (-1,-1), 1, colors.HexColor("#f59e0b")),
-        ('PADDING', (0,0), (-1,-1), 12),
+        ('PADDING', (0,0), (-1,-1), 10),
     ]))
     story.append(box_1)
     story.append(Spacer(1, 10))
 
-    story.append(Paragraph("<b>1. What are 'Tokens'?</b>", style_h2))
-    story.append(Paragraph("AI chatbots do not count information by words or sentences. They count information in pieces called <b>tokens</b>. As a quick rule of thumb:", style_body))
-    
-    tokens_info = [
-        [Paragraph("● <b>1 Token</b>", style_body), Paragraph("≈ 4 characters of text (about 3/4 of a English word).", style_body)],
-        [Paragraph("● <b>100 Tokens</b>", style_body), Paragraph("≈ About 75 words (a short paragraph).", style_body)],
-        [Paragraph("● <b>1,000 Tokens</b>", style_body), Paragraph("≈ About 750 words (a full page of single-spaced text).", style_body)],
-        [Paragraph("● <b>10,000 Tokens</b>", style_body), Paragraph("≈ A 10-page document or a large source code file.", style_body)]
+    story.append(Paragraph("<b>Top 5 Concrete User Benefits:</b>", style_h2))
+
+    benefits_list = [
+        [Paragraph("1. <b>Drastic Cost Reductions:</b>", style_body), Paragraph("Saves up to 95% on API token billing across long multi-turn agent sessions. Users save hundreds of dollars in USD ($) and thousands in INR (₹).", style_body)],
+        [Paragraph("2. <b>Instant 0-Token Fix Interception:</b>", style_body), Paragraph("With <b>Squeeze Memory</b>, repeated code errors are caught locally and repaired instantly with <b>0 token expenditure</b> and <b>0 ms API latency</b>.", style_body)],
+        [Paragraph("3. <b>Lightning Fast AI Responses:</b>", style_body), Paragraph("Smaller context payloads mean LLM models process prompts up to 3x faster, eliminating long wait times during interactive coding sessions.", style_body)],
+        [Paragraph("4. <b>Prevent Context Window Overflow:</b>", style_body), Paragraph("Extends effective prompt memory windows by preventing early context truncation or memory drop-offs in complex projects.", style_body)],
+        [Paragraph("5. <b>360° Visual Telemetry & Dashboard:</b>", style_body), Paragraph("Developers get real-time ASCII progress bars in terminal (`[████████░░░░] 88%`) and a rich local web analytics dashboard on <code>http://localhost:3000</code>.", style_body)]
     ]
-    tokens_table = Table(tokens_info, colWidths=[120, 384])
-    tokens_table.setStyle(TableStyle([('PADDING', (0,0), (-1,-1), 6)]))
-    story.append(tokens_table)
-
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>2. Why do tokens cost so much money and slow down AI?</b>", style_h2))
-    story.append(Paragraph("Every single time you type a message in an AI conversation thread, the AI model does not just read your latest message — <b>it re-reads the ENTIRE past conversation from top to bottom</b>! If your chat has been going on for hours, the AI re-reads 30,000 to 50,000 tokens on every single turn.", style_body))
-    
-    story.append(Paragraph("This causes two massive problems:", style_body))
-    story.append(Paragraph("1. <b>Skyrocketing Bills:</b> You pay for every token sent. Re-reading thousands of repetitive lines costs real money.<br/>2. <b>Slower Answers:</b> Re-reading giant files makes the AI take 30 to 60 seconds just to reply.", style_body))
-
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("<b>3. How SQUEEZE solves this completely:</b>", style_h2))
-    story.append(Paragraph("SQUEEZE sits quietly between you and the AI model. Before your words reach the AI, SQUEEZE instantly identifies what data is repetitive, converts big data lists into tight tables, strips fluff, and compresses code. The AI receives a clean, compressed prompt, gives you the exact same high-quality answer, and saves you money instantly!", style_body))
-
-    story.append(PageBreak())
-
-    # =========================================================================
-    # CHAPTER 2: ALL CORE FEATURES & RECENT UPGRADES
-    # =========================================================================
-    story.append(Paragraph("Chapter 2: All Core Features &amp; Recent Upgrades", style_h1))
-    story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=12))
-
-    story.append(Paragraph("We recently upgraded SQUEEZE to match and exceed the capabilities of <b>Headroom</b> (built by ex-Netflix infrastructure engineers). Below are all the core engines explained in plain English.", style_body))
-
-    # Feature 1: Smart JSON Crusher
-    story.append(Paragraph("Feature 1: Smart JSON Crusher (Data Payload Shrinker)", style_h2))
-    
-    json_analogy = """
-    🍕 <b>THE PIZZA MENU ANALOGY:</b><br/>
-    If 50 people order pizza, you don't write out the full 5-page pizza menu 50 times in a row. You write down the menu once, and then list a table of who wants what.<br/><br/>
-    <b>Smart JSON Crusher</b> looks at long computer data files, database logs, and API lists. Instead of repeating keys like <code>"user_id": 1, "status": "active"</code> 500 times, it creates a <b>single structural summary table</b>. This yields an incredible <b>60% to 95% token savings</b>!
-    """
-    box_json = Table([[Paragraph(json_analogy, style_analogy)]], colWidths=[504])
-    box_json.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), SURFACE_BG),
-        ('BOX', (0,0), (-1,-1), 1, BORDER_COLOR),
-        ('PADDING', (0,0), (-1,-1), 10),
-    ]))
-    story.append(box_json)
-    story.append(Spacer(1, 10))
-
-    # Feature 2: AST Code Compressor
-    story.append(Paragraph("Feature 2: AST Code Compressor (Smart Code Blueprinting)", style_h2))
-    code_analogy = """
-    🏗️ <b>THE ARCHITECTURAL BLUEPRINT ANALOGY:</b><br/>
-    When showing a house design to a builder, you don't paint every brick. You show the blueprint — walls, doors, room names, and electrical outlets.<br/><br/>
-    <b>AST Code Compressor</b> removes developer notes, comments, and extra blank spaces while keeping function signatures, export interfaces, and logic 100% intact. This yields <b>15% to 35% token savings</b> on source code.
-    """
-    box_code = Table([[Paragraph(code_analogy, style_analogy)]], colWidths=[504])
-    box_code.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), SURFACE_BG),
-        ('BOX', (0,0), (-1,-1), 1, BORDER_COLOR),
-        ('PADDING', (0,0), (-1,-1), 10),
-    ]))
-    story.append(box_code)
-    story.append(Spacer(1, 10))
-
-    # Feature 3: Reversible CCR Memory
-    story.append(Paragraph("Feature 3: Reversible CCR Store (The Coat-Check Memory Vault)", style_h2))
-    ccr_analogy = """
-    🧥 <b>THE COAT-CHECK TICKET ANALOGY:</b><br/>
-    When you enter a venue, you hand over your bulky winter coat at the cloakroom. In return, you get a tiny paper claim ticket (e.g., Ticket #123). You walk around lightweight without carrying a heavy coat. If you ever need your coat, you give the ticket back and get your exact coat.<br/><br/>
-    <b>Reversible CCR Store</b> saves huge chunks of text or logs locally on your machine and hands the AI a tiny ticket tag (e.g., <code>[CCR:sq_ref_123]</code>). If the AI ever needs to read the full original text, it calls SQUEEZE and retrieves <b>100% of the original text with zero data loss</b>!
-    """
-    box_ccr = Table([[Paragraph(ccr_analogy, style_analogy)]], colWidths=[504])
-    box_ccr.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), SURFACE_BG),
-        ('BOX', (0,0), (-1,-1), 1, BORDER_COLOR),
-        ('PADDING', (0,0), (-1,-1), 10),
-    ]))
-    story.append(box_ccr)
-    story.append(Spacer(1, 10))
-
-    # Feature 4: Output Steering & Effort Control
-    story.append(Paragraph("Feature 4: Output Token Steering & Effort Control", style_h2))
-    story.append(Paragraph("You pay <b>5 times more money</b> for every token the AI writes back compared to what you send. AI models often waste tokens writing long polite preambles ('Hello! Sure, I would be happy to help you with that...'). SQUEEZE automatically instructs the AI to be concise and trims unnecessary reasoning overhead on routine turns.", style_body))
-
-    story.append(Spacer(1, 10))
-    # Feature 5: Quad-Deployment
-    story.append(Paragraph("Feature 5: Quad-Deployment (4 Ways to Use SQUEEZE)", style_h2))
-    
-    modes_data = [
-        [Paragraph("<b>1. Global CLI (`squeeze`)</b>", style_body), Paragraph("Run terminal commands: <code>squeeze deploy</code>, <code>squeeze wrap claude</code>, <code>squeeze stats</code>.", style_body)],
-        [Paragraph("<b>2. Local Proxy (`localhost:8787`)</b>", style_body), Paragraph("Zero code changes. Proxy-wraps AI coding tools (Claude Code, Cursor, Codex, Aider).", style_body)],
-        [Paragraph("<b>3. TypeScript / Node SDK</b>", style_body), Paragraph("For developers: <code>import { compress } from 'squeeze-ai'</code> inline in server code.", style_body)],
-        [Paragraph("<b>4. Chrome / Edge Extension</b>", style_body), Paragraph("Native web buttons right inside <code>claude.ai</code>, <code>gemini.google.com</code>, and <code>chatgpt.com</code>.", style_body)]
-    ]
-    modes_table = Table(modes_data, colWidths=[160, 344])
-    modes_table.setStyle(TableStyle([
+    benefits_table = Table(benefits_list, colWidths=[150, 354])
+    benefits_table.setStyle(TableStyle([
         ('LINEBELOW', (0,0), (-1,-1), 0.5, BORDER_COLOR),
-        ('PADDING', (0,0), (-1,-1), 8),
+        ('PADDING', (0,0), (-1,-1), 6),
     ]))
-    story.append(modes_table)
+    story.append(benefits_table)
 
     story.append(PageBreak())
 
     # =========================================================================
-    # CHAPTER 3: REAL BENCHMARK TESTS & RESULTS
+    # CHAPTER 2: DETAILED MODULE UPGRADES (PHASES 1 TO 6)
     # =========================================================================
-    story.append(Paragraph("Chapter 3: Real Benchmark Tests &amp; Live Test Results", style_h1))
+    story.append(Paragraph("Chapter 2: Complete Capability Architecture (Phases 1 – 6)", style_h1))
     story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=12))
 
-    story.append(Paragraph("We executed automated benchmark tests (via <code>node test_squeeze_upgrade.js</code>) on real-world datasets. Below are the empirical, verified results:", style_body))
+    story.append(Paragraph("SQUEEZE AI is structured into modular engines spanning context reduction, memory caching, telemetry, and visual interfaces:", style_body))
+
+    # Module Table
+    modules_data = [
+        ["Phase / Engine", "Module File", "Core Functionality & Plain-English Description"],
+        ["Phase 1: JSON Crusher", "json-crusher.js", "Converts repetitive JSON object arrays into compact schema rows (60%–95% savings)."],
+        ["Phase 1: Code Compressor", "code-compressor.js", "Strips comments and spacing while maintaining 100% AST syntax integrity (15%–35% savings)."],
+        ["Phase 2: CCR Store", "ccr-store.js", "Reversible coat-check reference tickets (`sq_ref_123`) for 100% loss-free original context retrieval."],
+        ["Phase 3: Telemetry Stream", "self-heal.js", "Live progress emojis (`🔍`, `⚙️`, `🧪`, `⚠️`, `✅`, `⚡`) & `--test-cmd` custom test harness."],
+        ["Phase 4: Squeeze Memory", "memory.js", "Local persistent cache (`.squeeze_memory.json`) keyed by SHA256 error hashes for 0-token repairs."],
+        ["Phase 5: Analytics Recorder", "stats-recorder.js", "Appends session token metrics & USD/INR cost savings into `.squeeze_stats.json`."],
+        ["Phase 6: Interactive TUI", "cli.js", "Terminal progress bar (`[████████░░░░] 88.6%`) & keyboard shortcuts (`[H]`, `[D]`, `[Q]`)."],
+        ["Phase 6: Web Dashboard", "dashboard.js", "Local HTTP server on `http://localhost:3000` with Chart.js analytics & side-by-side trace inspector."]
+    ]
+    modules_table = Table(modules_data, colWidths=[110, 100, 294])
+    modules_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), PRIMARY_DARK),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0,0), (-1,0), 8.5),
+        ('GRID', (0,0), (-1,-1), 0.5, BORDER_COLOR),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, SURFACE_BG]),
+        ('PADDING', (0,0), (-1,-1), 6),
+    ]))
+    story.append(modules_table)
+
+    story.append(Spacer(1, 15))
+
+    # Feature Spotlight: Squeeze Memory
+    story.append(Paragraph("Spotlight: Zero-Token Local Fix Caching ('Squeeze Memory')", style_h2))
+    spotlight_text = """
+    <b>How Squeeze Memory Works:</b><br/>
+    1. When a code execution error occurs, SQUEEZE generates a deterministic <b>SHA256 error hash</b> from the reduced error trace.<br/>
+    2. Before calling an LLM, SQUEEZE queries <code>.squeeze_memory.json</code>.<br/>
+    3. If a matching fix exists from a previous session, SQUEEZE applies the cached fix directly.<br/>
+    4. The sandbox verifies the fix cleanly. Result: <b>0 LLM Tokens Expended (100% Savings) &amp; 0 ms Latency</b>!
+    """
+    spot_table = Table([[Paragraph(spotlight_text, style_body)]], colWidths=[504])
+    spot_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#f3e8ff")),
+        ('BOX', (0,0), (-1,-1), 1, ACCENT_PURPLE),
+        ('PADDING', (0,0), (-1,-1), 10),
+    ]))
+    story.append(spot_table)
+
+    story.append(PageBreak())
+
+    # =========================================================================
+    # CHAPTER 3: VERIFIED BENCHMARK RESULTS & COMPARISONS
+    # =========================================================================
+    story.append(Paragraph("Chapter 3: Empirically Verified Test Benchmarks", style_h1))
+    story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=12))
+
+    story.append(Paragraph("Below are live test results gathered directly from our automated test suite execution across Phases 3, 4, 5, and 6:", style_body))
 
     benchmarks_data = [
-        ["Dataset Type", "Original Tokens", "Squeezed Tokens", "Token Savings (%)", "Result"],
-        ["Large JSON API Payload", "786 tokens", "204 tokens", "74% Saved", "✅ PASS"],
-        ["React / TS Source Code", "149 tokens", "100 tokens", "33% Saved", "✅ PASS"],
-        ["System Logs & Stack Traces", "280 tokens", "24 tokens", "91% Saved", "✅ PASS"],
-        ["CCR Reversible Hydration", "Full Text", "Cached Hash", "100% Loss-Free", "✅ PASS"]
+        ["Test Suite / Feature", "Raw Tokens", "SQUEEZE Tokens", "Token Savings (%)", "Execution Status"],
+        ["Phase 3: Live Telemetry & Test Harness", "228 tokens", "25 tokens", "89.0% Saved", "✅ PASSED"],
+        ["Phase 4: Run 1 (LLM Self-Heal & Cache)", "228 tokens", "26 tokens", "88.6% Saved", "✅ PASSED"],
+        ["Phase 4: Run 2 (Squeeze Memory Interception)", "228 tokens", "0 tokens", "100.0% Saved (0 Tokens!)", "✅ PASSED"],
+        ["Phase 5: Stats Analytics Accumulation", "9,517 tokens", "812 tokens", "91.4% Net Savings", "✅ PASSED"],
+        ["Phase 6: Local Web Dashboard API & TUI", "http://localhost:3000", "Port 3000 Active", "200 OK Response", "✅ PASSED"]
     ]
 
-    bench_table = Table(benchmarks_data, colWidths=[150, 90, 95, 95, 74])
+    bench_table = Table(benchmarks_data, colWidths=[150, 85, 90, 105, 74])
     bench_table.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), PRIMARY),
         ('TEXTCOLOR', (0,0), (-1,0), colors.white),
         ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0,0), (-1,0), 9),
+        ('FONTSIZE', (0,0), (-1,0), 8.5),
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('GRID', (0,0), (-1,-1), 0.5, BORDER_COLOR),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, SURFACE_BG]),
-        ('PADDING', (0,0), (-1,-1), 8),
+        ('PADDING', (0,0), (-1,-1), 7),
     ]))
     story.append(bench_table)
 
-    story.append(Spacer(1, 20))
-    story.append(Paragraph("<b>Before &amp; After Example Comparisons:</b>", style_h2))
-
-    # Example 1: JSON
-    json_ex = [
-        [Paragraph("<b>Before (Raw JSON Log) — 786 Tokens</b>", style_body), Paragraph("<b>After (Smart JSON Crusher) — 204 Tokens</b>", style_body)],
-        [
-            Paragraph("<code>[<br/>  {\"id\": 1, \"user\": \"Alice\", \"role\": \"admin\", \"meta\": null},<br/>  {\"id\": 2, \"user\": \"Bob\", \"role\": \"user\", \"meta\": null}<br/>]</code>", style_code),
-            Paragraph("<code>{\"_schema\": [\"id\", \"user\", \"role\"],<br/> \"_rows\": [[1, \"Alice\", \"admin\"], [2, \"Bob\", \"user\"]]}</code>", style_code)
-        ]
-    ]
-    ex_table = Table(json_ex, colWidths=[246, 246])
-    ex_table.setStyle(TableStyle([
-        ('BOX', (0,0), (-1,-1), 1, BORDER_COLOR),
-        ('BACKGROUND', (0,0), (-1,0), SURFACE_BG),
-        ('PADDING', (0,0), (-1,-1), 8),
-    ]))
-    story.append(ex_table)
-
     story.append(Spacer(1, 15))
+    story.append(Paragraph("<b>Before &amp; After Compression Comparisons:</b>", style_h2))
 
-    # Example 2: Code
-    code_ex = [
-        [Paragraph("<b>Before (Raw Code) — 149 Tokens</b>", style_body), Paragraph("<b>After (CodeCompressor) — 100 Tokens</b>", style_body)],
+    # Side-by-side comparison table
+    compare_data = [
+        [Paragraph("<b>Uncompressed Stderr Trace (Raw) — 228 Tokens</b>", style_body), Paragraph("<b>SQUEEZE Compact Trace — 25 Tokens</b>", style_body)],
         [
-            Paragraph("<code>// Import React dependencies<br/>/* Multi-line component doc */<br/>export function UserList(props) {<br/>  // Fetch user data<br/>  return &lt;div&gt;Users&lt;/div&gt;;<br/>}</code>", style_code),
-            Paragraph("<code>export function UserList(props) {<br/>  return &lt;div&gt;Users&lt;/div&gt;;<br/>}</code>", style_code)
+            Paragraph("<code>Error: Sandbox verification check required<br/>    at runTask (sandbox_run_102.js:3:15)<br/>    at Object.&lt;anonymous&gt; (sandbox_run_102.js:5:1)<br/>    at Module._compile (node:internal/modules/cjs/loader:1376:14)</code>", style_code),
+            Paragraph("<code>[SQUEEZE Compact Error] sandbox_run_102.js:3 -&gt; Error: Sandbox verification check required</code>", style_code)
         ]
     ]
-    ex2_table = Table(code_ex, colWidths=[246, 246])
-    ex2_table.setStyle(TableStyle([
+    compare_table = Table(compare_data, colWidths=[246, 246])
+    compare_table.setStyle(TableStyle([
         ('BOX', (0,0), (-1,-1), 1, BORDER_COLOR),
         ('BACKGROUND', (0,0), (-1,0), SURFACE_BG),
         ('PADDING', (0,0), (-1,-1), 8),
     ]))
-    story.append(ex2_table)
+    story.append(compare_table)
 
-    story.append(PageBreak())
+    story.append(Spacer(1, 20))
 
     # =========================================================================
-    # CHAPTER 4: HOW NON-TECHNICAL USERS CAN INSTALL & TEST STEP-BY-STEP
+    # CHAPTER 4: CLI COMMANDS & DASHBOARD LAUNCH
     # =========================================================================
-    story.append(Paragraph("Chapter 4: How Non-Technical Users Can Install &amp; Test", style_h1))
+    story.append(Paragraph("Chapter 4: CLI Commands &amp; Local Dashboard Launch", style_h1))
     story.append(HRFlowable(width="100%", thickness=1, color=PRIMARY, spaceAfter=12))
 
-    story.append(Paragraph("You do not need to know programming or GitHub to install and use SQUEEZE! Follow the simple steps below:", style_body))
+    story.append(Paragraph("Developers and users can interact with SQUEEZE using simple terminal CLI commands:", style_body))
 
-    # Guide A: Web Browser
-    story.append(Paragraph("Option A: Using SQUEEZE in Your Web Browser (Claude, Gemini, ChatGPT)", style_h2))
-    
-    browser_steps = [
-        Paragraph("<b>Step 1:</b> Open your web browser (Google Chrome or Microsoft Edge) and go to <code>chrome://extensions</code>.", style_body),
-        Paragraph("<b>Step 2:</b> Turn on <b>Developer mode</b> using the toggle switch in the top-right corner.", style_body),
-        Paragraph("<b>Step 3:</b> Click the <b>Load unpacked</b> button in the top-left corner.", style_body),
-        Paragraph("<b>Step 4:</b> Select the folder <code>C:\\AASHU DEVS\\Squeeze\\Squeeze_Internal_Pro</code>.", style_body),
-        Paragraph("<b>Step 5:</b> Go to <a href='https://claude.ai'>claude.ai</a> or <a href='https://chatgpt.com'>chatgpt.com</a>, type or paste any prompt, and click the <b>Squeeze Funnel Icon</b> inside the chatbox!", style_body)
+    cli_cmds = [
+        [Paragraph("<b>Command</b>", style_body), Paragraph("<b>Description &amp; Action</b>", style_body)],
+        [Paragraph("<code>squeeze dashboard</code>", style_code), Paragraph("Launches local web analytics dashboard on <code>http://localhost:3000</code> and opens browser.", style_body)],
+        [Paragraph("<code>squeeze stats</code>", style_code), Paragraph("Prints the clean ASCII savings analytics dashboard (Sessions, Tokens, USD/INR Cost Savings).", style_body)],
+        [Paragraph("<code>squeeze heal \"<prompt>\" --test-cmd \"...\"</code>", style_code), Paragraph("Runs standalone self-healing loop with live emoji stream &amp; custom test harness.", style_body)],
+        [Paragraph("<code>squeeze proxy [--port 8787]</code>", style_code), Paragraph("Starts local proxy server to wrap AI coding tools (Claude Code, Cursor, Aider).", style_body)],
+        [Paragraph("<code>squeeze doctor</code>", style_code), Paragraph("Performs health diagnostic check on compression pipeline and proxy connection.", style_body)]
     ]
-    for step in browser_steps:
-        story.append(step)
-
-    story.append(Spacer(1, 15))
-
-    # Guide B: Terminal
-    story.append(Paragraph("Option B: Using SQUEEZE in Terminal / Command Line", style_h2))
-    
-    cli_steps = [
-        Paragraph("<b>Step 1:</b> Open your terminal or Command Prompt.", style_body),
-        Paragraph("<b>Step 2:</b> Type <code>npm install -g squeeze-ai</code> and press Enter.", style_body),
-        Paragraph("<b>Step 3:</b> Type <code>squeeze deploy</code> to start your local compression proxy.", style_body),
-        Paragraph("<b>Step 4:</b> Type <code>squeeze doctor</code> to see your live health status and token savings!", style_body)
-    ]
-    for step in cli_steps:
-        story.append(step)
+    cli_table = Table(cli_cmds, colWidths=[170, 334])
+    cli_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), PRIMARY_DARK),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, BORDER_COLOR),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, SURFACE_BG]),
+        ('PADDING', (0,0), (-1,-1), 6),
+    ]))
+    story.append(cli_table)
 
     story.append(Spacer(1, 20))
 
-    # Summary Conclusion Box
+    # Final Conclusion Box
     conclusion_text = """
-    🎉 <b>SUMMARY &amp; CONCLUSION:</b><br/>
-    SQUEEZE AI is fully built, tested, and active. It empowers anyone — from non-technical team members to senior developers — to compress AI prompts, save up to 95% of token costs, and keep context windows clean and fast.
+    🎉 <b>PLATFORM CONCLUSION:</b><br/>
+    SQUEEZE AI is fully functional, modular, and verified. It transforms AI token compression from a passive utility into a complete developer experience platform — saving token costs, accelerating AI responses, and eliminating repeated error latencies.
     """
     conclusion_table = Table([[Paragraph(conclusion_text, style_body)]], colWidths=[504])
     conclusion_table.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#f0fdf4")),
         ('BOX', (0,0), (-1,-1), 1, colors.HexColor("#22c55e")),
-        ('PADDING', (0,0), (-1,-1), 12),
+        ('PADDING', (0,0), (-1,-1), 10),
     ]))
     story.append(conclusion_table)
 

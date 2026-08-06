@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "squeeze": {
+      "command": "node",
+      "args": [
+        "C:\\AASHU DEVS\\Squeeze\\mcp-server.js"
+      ]
+    }
+  }
+}
