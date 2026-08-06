@@ -92,30 +92,54 @@ switch (command) {
     break;
   }
 
-  case 'stats':
+  case 'stats': {
+    const { loadStats } = require('../SQUEEZE main/modules/stats-recorder.js');
+    const stats = loadStats();
+    const rawSaved = stats.netTokensSaved || Math.max(0, stats.totalRawTokens - stats.totalSqueezeTokens);
+    const usdSaved = (stats.estimatedCostSavedUSD !== undefined ? stats.estimatedCostSavedUSD : (rawSaved / 1000 * 0.003)).toFixed(2);
+    const inrSaved = (stats.estimatedCostSavedINR !== undefined ? stats.estimatedCostSavedINR : (usdSaved * 84.00)).toFixed(2);
+
+    const ratio = stats.totalRawTokens > 0 ? (rawSaved / stats.totalRawTokens) : 0;
+    const percent = Math.round(ratio * 100);
+    const totalBlocks = 20;
+    const filledBlocks = Math.round(ratio * totalBlocks);
+    const emptyBlocks = totalBlocks - filledBlocks;
+    const progressBar = `[${'█'.repeat(filledBlocks)}${'░'.repeat(emptyBlocks)}] ${percent}% saved (${rawSaved} tokens reduction)`;
+
+    console.log(`
+====================================================
+⚡ SQUEEZE AI Interactive Terminal Telemetry Dashboard
+====================================================
+📌 Status Indicator          : 🟢 ACTIVE (v1.0.0-pro)
+📊 Token Reduction Progress  : ${progressBar}
+🔢 Total Self-Healing Sessions: ${stats.totalSessions}
+📥 Total Raw Error Tokens     : ${stats.totalRawTokens}
+📤 Total SQUEEZE Tokens Used  : ${stats.totalSqueezeTokens}
+⚡ Net Context Tokens Saved   : ${rawSaved} tokens
+💵 Estimated USD Cost Saved   : $${usdSaved}
+₹  Estimated INR Cost Saved   : ₹${inrSaved}
+🧠 Instant Memory Cache Hits  : ${stats.memoryCacheHits} (Zero-Token Fixes)
+====================================================
+⌨️ Launch Web Dashboard      : squeeze dashboard (http://localhost:3000)
+====================================================
+`);
+    break;
+  }
+
   case 'dashboard': {
-    http.get('http://localhost:8787/admin/stats', res => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const resObj = JSON.parse(data);
-          const stats = resObj.stats;
-          console.log('\n=====================================================');
-          console.log('   SQUEEZE Real-Time Context Compression Metrics   ');
-          console.log('=====================================================');
-          console.log(`Total Requests Processed: ${stats.requestsProcessed}`);
-          console.log(`Original Input Tokens:    ${stats.totalOriginalTokens}`);
-          console.log(`Compressed Tokens Sent:   ${stats.totalCompressedTokens}`);
-          console.log(`Saved Tokens:             ${stats.totalSavedTokens} (${stats.overallSavingsPercent}% saved)`);
-          console.log(`CCR Cache Entries:        ${resObj.ccrStore.entries} items`);
-          console.log(`Est. API Cost Saved:      $${stats.estimatedCostSavedUSD}\n`);
-        } catch (e) {
-          console.log('Could not fetch stats dashboard.');
-        }
-      });
-    }).on('error', () => {
-      console.log('Proxy Server is not running. Start it with: squeeze proxy');
+    const SqueezeDashboardServer = require('../SQUEEZE main/modules/dashboard.js');
+    const portIdx = args.indexOf('--port');
+    const port = portIdx !== -1 ? parseInt(args[portIdx + 1], 10) : 3000;
+    const dashboardServer = new SqueezeDashboardServer({ port });
+    dashboardServer.start().then(() => {
+      dashboardServer.openInBrowser();
+    }).catch(err => {
+      if (err.code === 'EADDRINUSE') {
+        console.log(`[SQUEEZE Dashboard] Already active on http://localhost:${port}`);
+        dashboardServer.openInBrowser();
+      } else {
+        console.error('❌ Failed to start dashboard server:', err);
+      }
     });
     break;
   }
