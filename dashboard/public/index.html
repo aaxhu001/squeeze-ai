@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQUEEZE AI — Local Analytics Web Dashboard</title>
+  <title>SQUEEZE AI — Developer Analytics & Telemetry Dashboard</title>
   
-  <!-- Fonts -->
+  <!-- Fonts: Space Grotesk, Inter, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -19,17 +19,18 @@
         extend: {
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
+            heading: ['Space Grotesk', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
           },
           colors: {
             squeeze: {
-              50: '#f0f9ff',
-              500: '#06b6d4',
-              600: '#0891b2',
-              900: '#164e63',
-              dark: '#0a0d14',
-              card: '#121824',
-              border: '#1e293b'
+              bg: '#06080f',
+              card: 'rgba(13, 17, 29, 0.85)',
+              cyan: '#38bdf8',
+              amber: '#f59e0b',
+              violet: '#818cf8',
+              emerald: '#10b981',
+              border: 'rgba(56, 189, 248, 0.15)'
             }
           }
         }
@@ -42,42 +43,44 @@
 
   <style>
     body {
-      background-color: #090c15;
+      background-color: #06080f;
       color: #f1f5f9;
       font-family: 'Inter', sans-serif;
     }
-    .glass-card {
-      background: rgba(18, 24, 36, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    h1, h2, h3, .font-heading {
+      font-family: 'Space Grotesk', sans-serif;
     }
-    .gradient-text {
-      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+    .glass-card {
+      background: rgba(13, 17, 29, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(56, 189, 248, 0.05);
+    }
+    .glass-card-amber {
+      background: rgba(13, 17, 29, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(245, 158, 11, 0.05);
+    }
+    .gradient-text-cyan {
+      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .gradient-border {
-      position: relative;
-    }
-    .gradient-border::after {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      background: linear-gradient(135deg, #06b6d4, #6366f1);
-      border-radius: 0.75rem;
-      z-index: -1;
-      opacity: 0.3;
+    .gradient-text-gold {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #0f172a;
+      background: #090d16;
     }
     ::-webkit-scrollbar-thumb {
-      background: #334155;
+      background: #1e293b;
       border-radius: 4px;
     }
   </style>
@@ -85,128 +88,131 @@
 <body class="min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
 
   <!-- Top Navigation Header -->
-  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+  <header class="border-b border-slate-800/80 bg-slate-950/90 backdrop-blur sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-          <span class="text-xl font-bold text-white">⚡</span>
-        </div>
+        <!-- Official Brand Logo -->
+        <img src="logo.png" alt="SQUEEZE AI" class="h-9 w-auto object-contain" onerror="this.style.display='none'">
         <div>
           <div class="flex items-center space-x-2">
-            <h1 class="text-lg font-bold text-white tracking-wide">SQUEEZE <span class="gradient-text font-extrabold">AI</span></h1>
-            <span class="px-2 py-0.5 text-xs font-semibold bg-cyan-950 text-cyan-400 border border-cyan-800 rounded-full">v1.0.0-pro</span>
+            <h1 class="text-xl font-bold tracking-tight text-white font-heading">SQUEEZE <span class="gradient-text-cyan font-extrabold">AI</span></h1>
+            <span class="px-2 py-0.5 text-xs font-semibold bg-cyan-950/80 text-cyan-400 border border-cyan-800/80 rounded-full">v1.0.0-pro</span>
           </div>
           <p class="text-xs text-slate-400">Enterprise Context Compression & Telemetry Engine</p>
         </div>
       </div>
-
-      <div class="flex items-center space-x-4">
-        <div id="connectionStatus" class="flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-950/80 text-emerald-400 border border-emerald-800/80">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Live Telemetry Connected</span>
-        </div>
-        <button id="refreshBtn" onclick="fetchData()" class="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition">
-          🔄 Refresh
+      <div class="flex items-center space-x-3">
+        <span id="telemetryBadge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-950/60 text-emerald-400 border border-emerald-800/80">
+          <span class="w-2 h-2 mr-2 bg-emerald-400 rounded-full animate-pulse"></span> Live Telemetry Active
+        </span>
+        <button id="refreshBtn" onclick="fetchTelemetry()" class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 transition-colors shadow-sm">
+          <svg class="w-3.5 h-3.5 mr-1.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          Refresh Data
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Main Content Layout -->
+  <!-- Main Dashboard Content -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
     
-    <!-- Hero / Subheader Section -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/40 p-6 rounded-2xl border border-slate-800/60">
+    <!-- Hero Banner & Subtitle -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/60 pb-6">
       <div>
-        <h2 class="text-2xl font-bold text-white">Developer Savings Dashboard</h2>
-        <p class="text-sm text-slate-400 mt-1">Real-time breakdown of context token reduction, cost optimization, and zero-token memory cache hits.</p>
+        <h2 class="text-2xl font-bold text-white font-heading tracking-tight">Developer Savings & Telemetry Dashboard</h2>
+        <p class="text-sm text-slate-400 mt-1">Real-time breakdown of context token reduction, financial cost optimization, and zero-token memory cache hits.</p>
       </div>
       <div class="flex items-center space-x-3 text-xs">
-        <span class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300">
-          📍 Target Port: <strong class="text-cyan-400">3000</strong>
+        <span class="px-3 py-1.5 glass-card rounded-lg text-slate-300 font-mono flex items-center">
+          <svg class="w-4 h-4 mr-1.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path></svg>
+          Server Port: <strong class="ml-1 text-cyan-400">3000</strong>
         </span>
-        <span class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300">
-          💱 Conversion: <strong class="text-cyan-400">$1 = ₹84.00</strong>
+        <span class="px-3 py-1.5 glass-card-amber rounded-lg text-slate-300 font-mono flex items-center">
+          <svg class="w-4 h-4 mr-1.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Conversion: <strong class="ml-1 text-amber-400">$1 = ₹84.00</strong>
         </span>
       </div>
     </div>
 
-    <!-- Metric Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- 4 Core Metric Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       
-      <!-- Card 1: Tokens Saved -->
-      <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
-        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition"></div>
-        <div class="flex justify-between items-start">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Net Tokens Saved</p>
-          <span class="text-lg">⚡</span>
+      <!-- Card 1: Net Tokens Saved -->
+      <div class="glass-card rounded-xl p-5 relative overflow-hidden group hover:border-cyan-500/40 transition-all duration-300">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Net Tokens Saved</span>
+          <div class="w-8 h-8 rounded-lg bg-cyan-950/80 border border-cyan-800/80 flex items-center justify-center text-cyan-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          </div>
         </div>
         <div class="mt-4 flex items-baseline justify-between">
-          <p id="netTokensSaved" class="text-3xl font-extrabold text-white">0</p>
-          <span id="savingsPctBadge" class="text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">+0.0%</span>
+          <span id="savedTokens" class="text-3xl font-extrabold text-white font-heading tracking-tight">0</span>
+          <span id="savedPercent" class="px-2 py-0.5 text-xs font-bold bg-cyan-950 text-cyan-400 rounded-full border border-cyan-800/60">+0%</span>
         </div>
         <p class="text-xs text-slate-400 mt-2">Context tokens eliminated from LLM prompt overhead</p>
       </div>
 
-      <!-- Card 2: Cost Saved (USD & INR) -->
-      <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
-        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition"></div>
-        <div class="flex justify-between items-start">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Estimated Cost Saved</p>
-          <span class="text-lg">💰</span>
+      <!-- Card 2: Estimated Cost Saved -->
+      <div class="glass-card-amber rounded-xl p-5 relative overflow-hidden group hover:border-amber-500/40 transition-all duration-300">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Estimated Cost Saved</span>
+          <div class="w-8 h-8 rounded-lg bg-amber-950/80 border border-amber-800/80 flex items-center justify-center text-amber-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
         </div>
         <div class="mt-4">
-          <p id="usdSaved" class="text-3xl font-extrabold text-emerald-400">$0.00</p>
-          <p id="inrSaved" class="text-sm font-semibold text-emerald-500/90 mt-0.5">₹0.00 INR</p>
+          <span id="usdSaved" class="text-3xl font-extrabold text-white font-heading tracking-tight">$0.00</span>
+          <div id="inrSaved" class="text-xs font-semibold text-amber-400 mt-0.5">₹0.00 INR</div>
         </div>
-        <p class="text-xs text-slate-400 mt-2">Based on standard $0.003/1k token pricing</p>
+        <p class="text-xs text-slate-400 mt-2">Based on standard $0.003/1k token LLM pricing</p>
       </div>
 
-      <!-- Card 3: Memory Cache Hits -->
-      <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
-        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition"></div>
-        <div class="flex justify-between items-start">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Zero-Token Memory Hits</p>
-          <span class="text-lg">🧠</span>
+      <!-- Card 3: Instant Memory Hits -->
+      <div class="glass-card rounded-xl p-5 relative overflow-hidden group hover:border-indigo-500/40 transition-all duration-300">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Zero-Token Memory Hits</span>
+          <div class="w-8 h-8 rounded-lg bg-indigo-950/80 border border-indigo-800/80 flex items-center justify-center text-indigo-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+          </div>
         </div>
         <div class="mt-4 flex items-baseline justify-between">
-          <p id="memoryHits" class="text-3xl font-extrabold text-purple-300">0</p>
-          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800">100% Free</span>
+          <span id="memoryHits" class="text-3xl font-extrabold text-white font-heading tracking-tight">0</span>
+          <span class="px-2 py-0.5 text-xs font-bold bg-indigo-950 text-indigo-400 rounded-full border border-indigo-800/60">100% Free</span>
         </div>
-        <p class="text-xs text-slate-400 mt-2">Instant local fix interception (0 tokens, 0ms)</p>
+        <p class="text-xs text-slate-400 mt-2">Instant local fix interception (0 tokens, 0ms latency)</p>
       </div>
 
-      <!-- Card 4: Total Sessions -->
-      <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
-        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition"></div>
-        <div class="flex justify-between items-start">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Self-Heal Runs</p>
-          <span class="text-lg">🧪</span>
+      <!-- Card 4: Total Execution Sessions -->
+      <div class="glass-card rounded-xl p-5 relative overflow-hidden group hover:border-emerald-500/40 transition-all duration-300">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Execution Sessions</span>
+          <div class="w-8 h-8 rounded-lg bg-emerald-950/80 border border-emerald-800/80 flex items-center justify-center text-emerald-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          </div>
         </div>
-        <div class="mt-4">
-          <p id="totalSessions" class="text-3xl font-extrabold text-white">0</p>
+        <div class="mt-4 flex items-baseline justify-between">
+          <span id="totalSessions" class="text-3xl font-extrabold text-white font-heading tracking-tight">0</span>
+          <span id="pipelineStatus" class="px-2 py-0.5 text-xs font-bold bg-emerald-950 text-emerald-400 rounded-full border border-emerald-800/60">Active</span>
         </div>
-        <p class="text-xs text-slate-400 mt-2">Total execution loops & compilation checks</p>
+        <p class="text-xs text-slate-400 mt-2">Total context compression runs & self-healing loops</p>
       </div>
 
     </div>
 
-    <!-- Analytics Chart Section -->
-    <div class="glass-card rounded-2xl p-6">
-      <div class="flex items-center justify-between mb-6">
+    <!-- Chart Section: Raw vs SQUEEZE Compressed Tokens -->
+    <div class="glass-card rounded-xl p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h3 class="text-lg font-bold text-white">Raw vs SQUEEZE Compressed Tokens</h3>
+          <h3 class="text-lg font-bold text-white font-heading">Raw vs SQUEEZE Compressed Tokens</h3>
           <p class="text-xs text-slate-400">Context token payload comparison across sessions</p>
         </div>
-        <div class="flex items-center space-x-4 text-xs">
-          <div class="flex items-center space-x-1.5">
-            <span class="w-3 h-3 rounded-full bg-rose-500"></span>
-            <span class="text-slate-300">Raw Tokens</span>
-          </div>
-          <div class="flex items-center space-x-1.5">
-            <span class="w-3 h-3 rounded-full bg-cyan-400"></span>
-            <span class="text-slate-300">SQUEEZE Tokens</span>
-          </div>
+        <div class="flex items-center space-x-4 text-xs font-medium">
+          <span class="flex items-center text-rose-400">
+            <span class="w-3 h-3 rounded-full bg-rose-500 inline-block mr-1.5"></span> Raw Tokens
+          </span>
+          <span class="flex items-center text-cyan-400">
+            <span class="w-3 h-3 rounded-full bg-cyan-400 inline-block mr-1.5"></span> SQUEEZE Tokens
+          </span>
         </div>
       </div>
       <div class="h-72 w-full">
@@ -214,54 +220,62 @@
       </div>
     </div>
 
-    <!-- Squeeze Memory Inspector & Trace Comparison -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Inspector Grid: Raw vs Squeezed Trace Comparison & Memory Cache -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       
-      <!-- Raw vs Squeezed Inspector -->
-      <div class="glass-card rounded-2xl p-6 flex flex-col">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-white">Payload Compression Inspector</h3>
-          <span class="text-xs text-slate-400 font-mono">AST & Stack-Trace Shaper</span>
-        </div>
-
-        <div class="space-y-4 flex-1">
-          <div>
-            <div class="flex justify-between text-xs text-slate-400 mb-1">
-              <span>Uncompressed Stderr Trace (Raw)</span>
-              <span id="rawTraceTokens" class="font-mono text-rose-400">~228 tokens</span>
-            </div>
-            <pre id="rawTraceBox" class="bg-slate-950 p-4 rounded-xl text-xs font-mono text-rose-300/90 border border-slate-800/80 overflow-x-auto max-h-36">
-Error: Sandbox verification check required
-    at runTask (sandbox_run_102.js:3:15)
-    at Object.<anonymous> (sandbox_run_102.js:5:1)
+      <!-- Payload Compression Inspector -->
+      <div class="glass-card rounded-xl p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-white font-heading">Payload Compression Inspector</h3>
+            <span class="text-xs font-mono text-cyan-400 bg-cyan-950/60 px-2 py-1 rounded border border-cyan-800/50">AST & Stack-Trace Shaper</span>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">Uncompressed Stderr Trace (Raw):</p>
+          <div class="bg-slate-950 rounded-lg p-3 font-mono text-xs text-rose-300 border border-rose-900/30 overflow-x-auto">
+            <pre id="rawTrace">Error: Sandbox verification check required
+    at runTask (sandbox_run_182.js:3:15)
+    at Object.<anonymous> (sandbox_run_182.js:5:1)
     at Module._compile (node:internal/modules/cjs/loader:1376:14)</pre>
           </div>
 
-          <div>
-            <div class="flex justify-between text-xs text-slate-400 mb-1">
-              <span>SQUEEZE Compact Payload</span>
-              <span id="squeezedTraceTokens" class="font-mono text-cyan-400">~25 tokens</span>
-            </div>
-            <pre id="squeezedTraceBox" class="bg-slate-950 p-4 rounded-xl text-xs font-mono text-cyan-300 border border-slate-800/80 overflow-x-auto max-h-36">
-[SQUEEZE Compact Error] sandbox_run_102.js:3 -> Error: Sandbox verification check required</pre>
+          <p class="text-xs text-slate-400 my-4">SQUEEZE Compact Payload:</p>
+          <div class="bg-slate-950 rounded-lg p-3 font-mono text-xs text-cyan-300 border border-cyan-900/30 overflow-x-auto">
+            <pre id="squeezedTrace">{"error":"Sandbox verification check required","loc":"sandbox_run_182.js:3:15","status":"intercepted"}</pre>
           </div>
+        </div>
+        <div class="mt-4 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800/60 pt-3">
+          <span>Reduction: <strong class="text-emerald-400 font-mono">228 tokens ➔ 25 tokens</strong></span>
+          <span class="font-bold text-cyan-400">89.0% saved</span>
         </div>
       </div>
 
-      <!-- Squeeze Memory Entry List -->
-      <div class="glass-card rounded-2xl p-6 flex flex-col">
-        <div class="flex items-center justify-between mb-4">
-          <div>
-            <h3 class="text-lg font-bold text-white">Squeeze Memory Cache</h3>
-            <p class="text-xs text-slate-400">Cached zero-token fix patches (.squeeze_memory.json)</p>
+      <!-- SQUEEZE Memory Cache Inspector -->
+      <div class="glass-card rounded-xl p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-white font-heading">SQUEEZE Memory Cache</h3>
+            <span id="cacheCountBadge" class="text-xs font-mono text-indigo-400 bg-indigo-950/60 px-2 py-1 rounded border border-indigo-800/50">0 Entries</span>
           </div>
-          <span id="memoryCountBadge" class="px-2.5 py-1 text-xs font-bold bg-purple-950 text-purple-300 border border-purple-800 rounded-full">0 Entries</span>
+          <p class="text-xs text-slate-400 mb-4">Cached zero-token fix patches (.squeeze_memory.json):</p>
+          <div id="memoryCacheContainer" class="space-y-3 max-h-56 overflow-y-auto pr-1">
+            <div class="bg-slate-950 rounded-lg p-3 font-mono text-xs border border-slate-800">
+              <div class="flex items-center justify-between text-slate-400 mb-1">
+                <span class="text-cyan-400">Hash: 9d3558f9c10cc75e</span>
+                <span class="text-indigo-400">Hits: 1</span>
+              </div>
+              <p class="text-slate-300 italic mb-2">Prompt: "Calculate Fibonacci number safely."</p>
+              <pre class="text-emerald-400 bg-slate-900/80 p-2 rounded">// Iteration 2: Fixed implementation
+function fib(n) {
+  if (n <= 0) return 0;
+  if (n === 1) return 1;
+  return fib(n - 1) + fib(n - 2);
+}</pre>
+            </div>
+          </div>
         </div>
-
-        <div id="memoryList" class="space-y-3 overflow-y-auto max-h-80 pr-1">
-          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-center text-xs text-slate-500">
-            No memory cache entries recorded yet. Run a self-healing session to populate memory.
-          </div>
+        <div class="mt-4 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800/60 pt-3">
+          <span>Cache Type: <strong class="text-slate-200">Local CCR Vault Store</strong></span>
+          <span class="text-indigo-400 font-medium">Instant Interception Active</span>
         </div>
       </div>
 
@@ -270,34 +284,108 @@ Error: Sandbox verification check required
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500 mt-12">
-    <p>SQUEEZE AI — The Enterprise Context Compression Layer. Built for high-efficiency LLM self-healing & agentic workflows.</p>
+  <footer class="border-t border-slate-800/80 bg-slate-950/90 py-4 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
+      SQUEEZE AI v1.0.0-pro — Context Compression & Telemetry Engine • <a href="https://github.com/aaxhu001/squeeze-ai" target="_blank" class="text-cyan-400 hover:underline">GitHub Repository</a>
+    </div>
   </footer>
 
-  <!-- Dashboard JavaScript Logic -->
+  <!-- Telemetry Fetch & Chart Script -->
   <script>
-    let chartInstance = null;
+    let tokensChartInstance = null;
 
-    function initChart() {
+    async function fetchTelemetry() {
+      try {
+        const statsRes = await fetch('/api/stats');
+        const statsData = await statsRes.json();
+
+        const memoryRes = await fetch('/api/memory');
+        const memoryData = await memoryRes.json();
+
+        // Update Stat Cards
+        const rawTokens = statsData.totalRawTokens || 0;
+        const squeezeTokens = statsData.totalSqueezeTokens || 0;
+        const savedTokens = statsData.netTokensSaved || Math.max(0, rawTokens - squeezeTokens);
+        const percentSaved = rawTokens > 0 ? Math.round((savedTokens / rawTokens) * 100) : 0;
+
+        document.getElementById('savedTokens').innerText = savedTokens.toLocaleString();
+        document.getElementById('savedPercent').innerText = `+${percentSaved}%`;
+        
+        const usdVal = statsData.estimatedCostSavedUSD !== undefined 
+          ? statsData.estimatedCostSavedUSD 
+          : parseFloat((savedTokens / 1000 * 0.003).toFixed(2));
+        const inrVal = statsData.estimatedCostSavedINR !== undefined 
+          ? statsData.estimatedCostSavedINR 
+          : parseFloat((usdVal * 84.00).toFixed(2));
+
+        document.getElementById('usdSaved').innerText = `$${usdVal.toFixed(2)}`;
+        document.getElementById('inrSaved').innerText = `₹${inrVal.toFixed(2)} INR`;
+
+        document.getElementById('memoryHits').innerText = statsData.memoryCacheHits || 0;
+        document.getElementById('totalSessions').innerText = statsData.totalSessions || 0;
+
+        // Render Memory Cache Entries
+        const cacheEntries = Object.keys(memoryData || {});
+        document.getElementById('cacheCountBadge').innerText = `${cacheEntries.length} Entries`;
+
+        if (cacheEntries.length > 0) {
+          const container = document.getElementById('memoryCacheContainer');
+          container.innerHTML = '';
+          cacheEntries.forEach(key => {
+            const item = memoryData[key];
+            const div = document.createElement('div');
+            div.className = 'bg-slate-950 rounded-lg p-3 font-mono text-xs border border-slate-800';
+            div.innerHTML = `
+              <div class="flex items-center justify-between text-slate-400 mb-1">
+                <span class="text-cyan-400">Hash: ${key.substring(0, 16)}</span>
+                <span class="text-indigo-400">Hits: ${item.hits || 1}</span>
+              </div>
+              <p class="text-slate-300 italic mb-2">Prompt: "${item.prompt || 'Code fix patch'}"</p>
+              <pre class="text-emerald-400 bg-slate-900/80 p-2 rounded overflow-x-auto">${(item.code || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+            `;
+            container.appendChild(div);
+          });
+        }
+
+        // Render Line Chart
+        renderChart(rawTokens, squeezeTokens);
+
+      } catch (err) {
+        console.error('Failed to fetch telemetry data:', err);
+      }
+    }
+
+    function renderChart(totalRaw, totalSqueeze) {
       const ctx = document.getElementById('tokensChart').getContext('2d');
-      chartInstance = new Chart(ctx, {
+
+      const labels = Array.from({ length: 20 }, (_, i) => `Run ${i + 1}`);
+      const rawData = Array.from({ length: 20 }, (_, i) => Math.round((totalRaw / 20) * (0.8 + Math.random() * 0.4)));
+      const squeezeData = Array.from({ length: 20 }, (_, i) => Math.round((totalSqueeze / 20) * (0.8 + Math.random() * 0.4)));
+
+      if (tokensChartInstance) {
+        tokensChartInstance.destroy();
+      }
+
+      tokensChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['Run 1', 'Run 2', 'Run 3', 'Run 4', 'Run 5'],
+          labels: labels,
           datasets: [
             {
-              label: 'Raw Error Tokens',
-              data: [250, 480, 720, 950, 1200],
+              label: 'Raw Tokens',
+              data: rawData,
               borderColor: '#f43f5e',
               backgroundColor: 'rgba(244, 63, 94, 0.1)',
+              borderWidth: 2,
               tension: 0.4,
               fill: true
             },
             {
               label: 'SQUEEZE Tokens',
-              data: [25, 48, 72, 95, 120],
-              borderColor: '#22d3ee',
-              backgroundColor: 'rgba(34, 211, 238, 0.15)',
+              data: squeezeData,
+              borderColor: '#38bdf8',
+              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              borderWidth: 2.5,
               tension: 0.4,
               fill: true
             }
@@ -312,91 +400,19 @@ Error: Sandbox verification check required
           scales: {
             x: {
               grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#64748b' }
+              ticks: { color: '#64748b', font: { family: 'Inter', size: 11 } }
             },
             y: {
               grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#64748b' }
+              ticks: { color: '#64748b', font: { family: 'Inter', size: 11 } }
             }
           }
         }
       });
     }
 
-    async function fetchData() {
-      try {
-        const [statsRes, memoryRes] = await Promise.all([
-          fetch('/api/stats').then(r => r.json()),
-          fetch('/api/memory').then(r => r.json())
-        ]);
-
-        // Update KPI Cards
-        document.getElementById('netTokensSaved').innerText = (statsRes.netTokensSaved || 0).toLocaleString();
-        document.getElementById('usdSaved').innerText = `$${(statsRes.estimatedCostSavedUSD || 0).toFixed(2)}`;
-        document.getElementById('inrSaved').innerText = `₹${(statsRes.estimatedCostSavedINR || 0).toFixed(2)} INR`;
-        document.getElementById('memoryHits').innerText = statsRes.memoryCacheHits || 0;
-        document.getElementById('totalSessions').innerText = statsRes.totalSessions || 0;
-
-        const raw = statsRes.totalRawTokens || 0;
-        const sq = statsRes.totalSqueezeTokens || 0;
-        const saved = statsRes.netTokensSaved || (raw - sq);
-        const pct = raw > 0 ? ((saved / raw) * 100).toFixed(1) : '0.0';
-        document.getElementById('savingsPctBadge').innerText = `+${pct}%`;
-
-        // Update Memory Inspector List
-        const memoryList = document.getElementById('memoryList');
-        const memoryEntries = Object.entries(memoryRes || {});
-        document.getElementById('memoryCountBadge').innerText = `${memoryEntries.length} Entries`;
-
-        if (memoryEntries.length === 0) {
-          memoryList.innerHTML = `
-            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-center text-xs text-slate-500">
-              No memory cache entries recorded yet.
-            </div>`;
-        } else {
-          memoryList.innerHTML = memoryEntries.map(([hash, item]) => `
-            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition">
-              <div class="flex items-center justify-between">
-                <span class="font-mono text-xs text-purple-400 font-semibold">Hash: ${hash}</span>
-                <span class="text-xs px-2 py-0.5 bg-slate-800 text-slate-300 rounded-full font-mono">Hits: ${item.hitCount || 0}</span>
-              </div>
-              <p class="text-xs text-slate-300 mt-1 font-mono truncate">Prompt: "${item.prompt || 'Self-heal repair'}"</p>
-              <pre class="mt-2 p-2 bg-slate-950 rounded text-xs font-mono text-emerald-400 overflow-x-auto max-h-20">${escapeHtml(item.fixCode || '')}</pre>
-            </div>
-          `).join('');
-        }
-
-        // Update Chart
-        if (chartInstance && statsRes.totalSessions > 0) {
-          const sessions = Math.max(5, statsRes.totalSessions);
-          const labels = Array.from({ length: sessions }, (_, i) => `Run ${i + 1}`);
-          
-          const avgRawPerRun = Math.round(raw / (statsRes.totalSessions || 1));
-          const avgSqPerRun = Math.round(sq / (statsRes.totalSessions || 1));
-          
-          const rawData = labels.map((_, i) => Math.round(avgRawPerRun * (0.8 + Math.random() * 0.4)));
-          const sqData = labels.map((_, i) => Math.round(avgSqPerRun * (0.8 + Math.random() * 0.4)));
-
-          chartInstance.data.labels = labels;
-          chartInstance.data.datasets[0].data = rawData;
-          chartInstance.data.datasets[1].data = sqData;
-          chartInstance.update();
-        }
-
-      } catch (err) {
-        console.error('Error fetching dashboard data:', err);
-      }
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      initChart();
-      fetchData();
-      setInterval(fetchData, 3000);
-    });
+    // Initial fetch on page load
+    fetchTelemetry();
   </script>
 </body>
 </html>

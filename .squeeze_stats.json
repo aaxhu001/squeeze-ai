@@ -1,9 +1,9 @@
 {
-  "totalSessions": 20,
-  "totalRawTokens": 13117,
-  "totalSqueezeTokens": 1352,
-  "netTokensSaved": 11765,
+  "totalSessions": 22,
+  "totalRawTokens": 15517,
+  "totalSqueezeTokens": 1712,
+  "netTokensSaved": 13805,
   "estimatedCostSavedUSD": 0.04,
-  "estimatedCostSavedINR": 2.96,
+  "estimatedCostSavedINR": 3.48,
   "memoryCacheHits": 6
 }
